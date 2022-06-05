@@ -1,0 +1,17 @@
+spring:
+  main:
+    web-application-type: none
+  application:
+    ui:
+      title: 勤劳的小蜜蜂
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/bee?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    generate-ddl: true
+    show-sql: true
+    open-in-view: true
