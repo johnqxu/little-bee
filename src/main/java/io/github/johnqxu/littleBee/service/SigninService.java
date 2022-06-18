@@ -9,8 +9,10 @@ import io.github.johnqxu.littleBee.repository.EmployRepository;
 import io.github.johnqxu.littleBee.repository.ProjectRepository;
 import io.github.johnqxu.littleBee.repository.SigninDataRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 @Service
@@ -20,6 +22,9 @@ public class SigninService {
     private final SigninDataRepository signinRepository;
     private final ProjectRepository projectRepository;
     private final EmployRepository employRepository;
+
+    @Resource
+    ApplicationContext applicationContext;
 
     public SigninService(SigninDataRepository projectRepository, ProjectRepository projectRepository1, EmployRepository employRepository) {
         this.signinRepository = projectRepository;
