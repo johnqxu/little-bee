@@ -73,15 +73,17 @@ public class SigninService {
                 ps.add(signinProject);
             }
         }
-        Set<ProjectEntity> sortedProjects = new TreeSet<>((o1, o2) -> o2.getSchoolHour().compareTo(o1.getSchoolHour()));
+        Set<ProjectEntity> sortedProjects = new TreeSet<>(Comparator.reverseOrder());
         sortedProjects.addAll(ps);
         Iterator<ProjectEntity> ip = sortedProjects.iterator();
         int i = 0;
         while (ip.hasNext()) {
+            i++;
             ProjectEntity p = ip.next();
             log.info("项目:{},课时:{}", p.getProjectName(), p.getSchoolHour());
             if (i > 3) {
                 ip.remove();
+                log.info("删除项目:{},当前容量:{}",p.getProjectName(),sortedProjects.size());
             }
         }
         return sortedProjects;
