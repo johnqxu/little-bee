@@ -2,10 +2,15 @@ package io.github.johnqxu.littleBee.service;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.listener.PageReadListener;
+import com.alibaba.excel.util.ListUtils;
+import io.github.johnqxu.littleBee.entity.EmployEntity;
+import io.github.johnqxu.littleBee.entity.ProjectEntity;
 import io.github.johnqxu.littleBee.event.MessageEvent;
 import io.github.johnqxu.littleBee.event.ProgressChangeEvent;
 import io.github.johnqxu.littleBee.exception.IllegalDataException;
 import io.github.johnqxu.littleBee.model.*;
+import io.github.johnqxu.littleBee.repository.EmployRepository;
+import io.github.johnqxu.littleBee.repository.ProjectRepository;
 import javafx.scene.control.Alert;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -14,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -22,13 +28,18 @@ public class PerformService {
     private final ProjectService projectService;
     private final SigninService signinService;
 
+    private final EmployRepository employRepository;
+    private final ProjectRepository projectRepository;
+
     @Resource
     ApplicationContext applicationContext;
 
-    public PerformService(EmployService employService, ProjectService projectService, SigninService signinService) {
+    public PerformService(EmployService employService, ProjectService projectService, SigninService signinService, EmployRepository employRepository, ProjectRepository projectRepository) {
         this.employService = employService;
         this.projectService = projectService;
         this.signinService = signinService;
+        this.employRepository = employRepository;
+        this.projectRepository = projectRepository;
     }
 
     private void setProgress(String progressLog, double progress) {
@@ -128,6 +139,36 @@ public class PerformService {
         assign();
         setProgress("完成数据处理", 1.0);
 
+    }
+
+    public void export(){
+        String xlsFile = "导出数据-"+System.currentTimeMillis()+".xls";
+        EasyExcel.write(xlsFile, TrainingListXlsData.class).sheet("模板").doWrite(data());
+    }
+
+    private List<TrainingListXlsData> data() {
+        List<TrainingListXlsData> list = ListUtils.newArrayList();
+        List<EmployEntity> employs = employRepository.findEmployEntityByProjectsIsNotNull();
+        int i = 1;
+        for(EmployEntity employEntity : employs){
+            TrainingListXlsData data = new TrainingListXlsData();
+            data.setCompanyName(employEntity.getCompanyName());
+            data.setIdNo(employEntity.getIdNo());
+            data.setMobile(employEntity.getMobile());
+            data.setExamResult("合格");
+            data.setName(employEntity.getEmployName());
+            data.setIsLocal("是");
+            data.setTrainerStartDate(employEntity.getStartDate());
+            data.setTrainerEndDate(employEntity.getEndDate());
+            for(ProjectEntity project:employEntity.getProjects()){
+                data.setProjectName(project.getProjectName());
+                data.setProjectStartDate(project.getStartDate());
+                data.setProjectEndDate(project.getEndDate());
+                data.setSeq(i++);
+                list.add(data);
+            }
+        }
+        return list;
     }
 
 }

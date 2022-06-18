@@ -1,7 +1,7 @@
 package io.github.johnqxu.littleBee.controller;
 
-import io.github.johnqxu.littleBee.event.ProgressChangeEvent;
 import io.github.johnqxu.littleBee.event.MessageEvent;
+import io.github.johnqxu.littleBee.event.ProgressChangeEvent;
 import io.github.johnqxu.littleBee.service.PerformService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -32,6 +32,8 @@ public class MainController implements Initializable, ApplicationListener<Applic
     Button projectEmployBtn;
     @FXML
     Button startBtn;
+    @FXML
+    Button exportBtn;
     @FXML
     VBox mainBox;
     @FXML
@@ -75,8 +77,10 @@ public class MainController implements Initializable, ApplicationListener<Applic
         startBtn.setDisable(true);
     }
 
-    public void export(){
-
+    public void export() {
+        exportBtn.setDisable(true);
+        performService.export();
+        exportBtn.setDisable(false);
     }
 
     private void show(Alert.AlertType alertType, String message, ButtonType... buttons) {
@@ -97,7 +101,7 @@ public class MainController implements Initializable, ApplicationListener<Applic
             String log = progressLog.getText();
             log = String.join("\n", progressChangeEvent.getProgressText(), log);
             progressLog.setText(log);
-            if(progressChangeEvent.getProgress()==1){
+            if (progressChangeEvent.getProgress() == 1) {
                 startBtn.setDisable(false);
             }
         } else if (applicationEvent instanceof MessageEvent validationEvent) {

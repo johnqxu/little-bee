@@ -20,7 +20,7 @@
                         onAction="#performAction" prefHeight="36.0" prefWidth="80.0" text="开始处理"/>
                 <TextArea fx:id="progressLog" layoutX="18.0" layoutY="141.0" prefHeight="100.0" prefWidth="607.0"/>
                 <Button fx:id="exportBtn" layoutX="544.0" layoutY="261.0" mnemonicParsing="false"
-                        onAction="#performAction" prefHeight="36.0" prefWidth="80.0" text="导出"/>
+                        onAction="#export" prefHeight="36.0" prefWidth="80.0" text="导出"/>
             </children>
         </AnchorPane>
     </children>

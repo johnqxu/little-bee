@@ -20,4 +20,6 @@ public interface EmployRepository extends JpaRepository<EmployEntity, Integer>, 
 
     EmployEntity findEmployEntityByEmployName(String employName);
 
+    List<EmployEntity> findEmployEntityByProjectsIsNotNull();
+
 }
