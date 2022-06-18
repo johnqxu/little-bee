@@ -72,6 +72,11 @@ public class MainController implements Initializable, ApplicationListener<Applic
 
     public void performAction() {
         performService.perform(projectExcel, employExcel, projectEmployExcel);
+        startBtn.setDisable(true);
+    }
+
+    public void export(){
+
     }
 
     private void show(Alert.AlertType alertType, String message, ButtonType... buttons) {
@@ -85,23 +90,21 @@ public class MainController implements Initializable, ApplicationListener<Applic
         alert.showAndWait();
     }
 
-
     @Override
     public void onApplicationEvent(ApplicationEvent applicationEvent) {
-        if (applicationEvent instanceof ProgressChangeEvent) {
-            ProgressChangeEvent progressChangeEvent = (ProgressChangeEvent) applicationEvent;
+        if (applicationEvent instanceof ProgressChangeEvent progressChangeEvent) {
             progressBar.setProgress(progressChangeEvent.getProgress());
             String log = progressLog.getText();
             log = String.join("\n", progressChangeEvent.getProgressText(), log);
             progressLog.setText(log);
-        } else if (applicationEvent instanceof MessageEvent) {
-            MessageEvent validationEvent = (MessageEvent) applicationEvent;
-//            show(validationEvent.getAlertType(), validationEvent.getValidateMessage());
+            if(progressChangeEvent.getProgress()==1){
+                startBtn.setDisable(false);
+            }
+        } else if (applicationEvent instanceof MessageEvent validationEvent) {
             String log = progressLog.getText();
             log = String.join("\n", validationEvent.getValidateMessage(), log);
             progressLog.setText(log);
         }
-
 
     }
 }

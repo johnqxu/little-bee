@@ -1,7 +1,5 @@
 package io.github.johnqxu.littleBee.repository;
 
-import io.github.johnqxu.littleBee.entity.EmployEntity;
-import io.github.johnqxu.littleBee.entity.ProjectEntity;
 import io.github.johnqxu.littleBee.service.SigninService;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,11 +11,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 @DataJpaTest
 @Rollback(value = false)

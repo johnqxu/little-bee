@@ -17,5 +17,5 @@ public class ProjectXlsData {
 
     private int schoolHour;
 
-    private int goalOfParticipants;
+    private int priority;
 }

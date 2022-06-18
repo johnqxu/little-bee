@@ -35,21 +35,21 @@ public class EmployRepositoryTest {
                 .projectName("项目1")
                 .startDate(new Date())
                 .endDate(new Date())
-                .goalOfParticipants(10)
+                .priority(10)
                 .schoolHour(1)
                 .build();
         ProjectEntity p2 = ProjectEntity.builder()
                 .projectName("项目2")
                 .startDate(new Date())
                 .endDate(new Date())
-                .goalOfParticipants(20)
+                .priority(20)
                 .schoolHour(2)
                 .build();
         ProjectEntity p3 = ProjectEntity.builder()
                 .projectName("项目3")
                 .startDate(new Date())
                 .endDate(new Date())
-                .goalOfParticipants(30)
+                .priority(30)
                 .schoolHour(3)
                 .build();
         projectRepository.saveAll(List.of(p1, p2, p3));

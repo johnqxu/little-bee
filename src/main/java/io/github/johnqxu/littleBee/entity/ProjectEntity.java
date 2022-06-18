@@ -37,19 +37,24 @@ public class ProjectEntity implements Serializable, Comparable<ProjectEntity> {
     @Column(name = "school_hour", nullable = false)
     private Integer schoolHour;
 
-    @Column(name = "goal_of_participants")
-    private Integer goalOfParticipants;
+    @Column(name = "priority")
+    private Integer priority;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "projects")
     private Set<EmployEntity> employs;
 
     @Override
     public int compareTo(ProjectEntity o) {
-        int gap = this.schoolHour - o.getSchoolHour();
-        if (gap != 0) {
-            return gap;
+        int gapSchoolHour = this.schoolHour - o.getSchoolHour();
+        if (gapSchoolHour != 0) {
+            return gapSchoolHour;
         } else {
-            return this.getProjectName().compareTo(o.projectName);
+            int gapPriority = this.priority - o.getPriority();
+            if(gapPriority != 0){
+                return gapPriority;
+            }else{
+                return this.getProjectName().compareTo(o.projectName);
+            }
         }
     }
 }

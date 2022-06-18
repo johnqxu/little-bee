@@ -76,7 +76,7 @@ public class PerformService {
                             .startDate(projectData.getStartDate())
                             .endDate(projectData.getEndDate())
                             .schoolHour(projectData.getSchoolHour())
-                            .goalOfParticipants(projectData.getGoalOfParticipants())
+                            .priority(projectData.getPriority())
                             .build();
                     projectService.create(project);
                 }

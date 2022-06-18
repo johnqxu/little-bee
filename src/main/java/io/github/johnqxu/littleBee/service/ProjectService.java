@@ -27,7 +27,7 @@ public class ProjectService {
                 .startDate(project.getStartDate())
                 .endDate(project.getEndDate())
                 .schoolHour(project.getSchoolHour())
-                .goalOfParticipants(project.getGoalOfParticipants())
+                .priority(project.getPriority())
                 .build();
         projectRepository.save(projectEntity);
     }

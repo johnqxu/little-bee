@@ -18,5 +18,5 @@ public class Project {
 
     private int schoolHour;
 
-    private int goalOfParticipants;
+    private int priority;
 }
