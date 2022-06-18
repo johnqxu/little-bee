@@ -20,6 +20,12 @@ public class Employ {
     private String companyName;
 
     @NonNull
+    private String idNo;
+
+    @NonNull
+    private String mobile;
+
+    @NonNull
     private Date startDate;
 
     private Date endDate;

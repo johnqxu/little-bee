@@ -13,6 +13,10 @@ public class EmployXlsData {
 
     private String companyName;
 
+    private String idNo;
+
+    private String mobile;
+
     private Date startDate;
 
     private Date endDate;

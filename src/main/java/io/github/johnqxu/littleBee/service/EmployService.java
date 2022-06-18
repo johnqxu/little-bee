@@ -28,6 +28,8 @@ public class EmployService {
         if (employ.getEndDate() != null) {
             employEntity.setEndDate(employ.getEndDate());
         }
+        employEntity.setIdNo(employ.getIdNo());
+        employEntity.setMobile(employ.getMobile());
         employRepository.save(employEntity);
     }
 
@@ -38,11 +40,10 @@ public class EmployService {
     public void validate() throws IllegalDataException{
         List<String> employNames = employRepository.findDistinctEmployName();
         log.info("" + employNames);
-        for (int i = 0; i < employNames.size(); i++) {
-            List<EmployEntity> employEntities = employRepository.findEmployEntitiesByEmployNameOrderByStartDateAsc(employNames.get(i));
+        for (String employName : employNames) {
+            List<EmployEntity> employEntities = employRepository.findEmployEntitiesByEmployNameOrderByStartDateAsc(employName);
             Date lastEndDate = null;
             for (int j = 0; j < employEntities.size(); j++) {
-//                log.info("employId:{}",employEntities.get(j).getId());
                 if (j > 0) {
                     if (lastEndDate == null || (employEntities.get(j).getStartDate() != null && employEntities.get(j).getStartDate().before(lastEndDate))) {
                         log.info("lastDate:{},startDate:{},endDate{}", lastEndDate, employEntities.get(j).getStartDate(), employEntities.get(j).getEndDate());

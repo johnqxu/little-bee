@@ -93,6 +93,8 @@ public class PerformService {
                     Employ employ = Employ.builder()
                             .employName(employData.getEmployName())
                             .companyName(employData.getCompanyName())
+                            .idNo(employData.getIdNo())
+                            .mobile(employData.getMobile())
                             .startDate(employData.getStartDate())
                             .endDate(employData.getEndDate())
                             .status("normal")
