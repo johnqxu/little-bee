@@ -2,6 +2,7 @@ package io.github.johnqxu.littleBee.repository;
 
 import io.github.johnqxu.littleBee.entity.EmployEntity;
 import io.github.johnqxu.littleBee.entity.ProjectEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -19,6 +20,7 @@ import java.util.Set;
 @Rollback(value = false)
 @RunWith(SpringRunner.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Slf4j
 public class EmployRepositoryTest {
 
     @Resource
@@ -61,7 +63,7 @@ public class EmployRepositoryTest {
                 .projects(Set.of(p1))
                 .build();
         employRepository.save(e1);
-        Set s  = new HashSet(e1.getProjects());
+        Set<ProjectEntity> s  = new HashSet<>(e1.getProjects());
         s.add(p2);
         e1.setProjects(s);
         employRepository.save(e1);
@@ -72,5 +74,12 @@ public class EmployRepositoryTest {
 //        EmployEntity em = employRepository.findEmployEntityByEmployName("张三");
 //        em.setProjects(Set.of(p2));
 //        employRepository.save(em);
+    }
+
+    @Test
+    public void testQuery(){
+//        List<EmployEntity> employs1 = employRepository.findAll();
+        List<EmployEntity> employs2 = employRepository.findEmployEntityByProjectsIsNotNull();
+        log.info("{}",employs2.size());
     }
 }

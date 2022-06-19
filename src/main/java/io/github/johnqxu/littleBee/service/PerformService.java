@@ -143,29 +143,33 @@ public class PerformService {
 
     public void export(){
         String xlsFile = "导出数据-"+System.currentTimeMillis()+".xls";
-        EasyExcel.write(xlsFile, TrainingListXlsData.class).sheet("模板").doWrite(data());
+        EasyExcel.write(xlsFile, TrainingListXlsData.class).sheet("参训明细").doWrite(data());
     }
 
     private List<TrainingListXlsData> data() {
         List<TrainingListXlsData> list = ListUtils.newArrayList();
-        List<EmployEntity> employs = employRepository.findEmployEntityByProjectsIsNotNull();
+        List<EmployEntity> employs = employRepository.findAll();
         int i = 1;
         for(EmployEntity employEntity : employs){
-            TrainingListXlsData data = new TrainingListXlsData();
-            data.setCompanyName(employEntity.getCompanyName());
-            data.setIdNo(employEntity.getIdNo());
-            data.setMobile(employEntity.getMobile());
-            data.setExamResult("合格");
-            data.setName(employEntity.getEmployName());
-            data.setIsLocal("是");
-            data.setTrainerStartDate(employEntity.getStartDate());
-            data.setTrainerEndDate(employEntity.getEndDate());
-            for(ProjectEntity project:employEntity.getProjects()){
-                data.setProjectName(project.getProjectName());
-                data.setProjectStartDate(project.getStartDate());
-                data.setProjectEndDate(project.getEndDate());
-                data.setSeq(i++);
-                list.add(data);
+            if(employEntity.getProjects()!=null) {
+                TrainingListXlsData data = new TrainingListXlsData();
+                data.setCompanyName(employEntity.getCompanyName());
+                data.setIdNo(employEntity.getIdNo());
+                data.setMobile(employEntity.getMobile());
+                data.setExamResult("合格");
+                data.setIdType("身份证");
+                data.setName(employEntity.getEmployName());
+                data.setIsLocal("是");
+                data.setTrainerStartDate(employEntity.getStartDate());
+                data.setTrainerEndDate(employEntity.getEndDate());
+                for (ProjectEntity project : employEntity.getProjects()) {
+                    data.setProjectName(project.getProjectName());
+                    data.setProjectStartDate(project.getStartDate());
+                    data.setProjectEndDate(project.getEndDate());
+                    data.setSchoolHours(project.getSchoolHour());
+                    data.setSeq(i++);
+                    list.add(data);
+                }
             }
         }
         return list;
