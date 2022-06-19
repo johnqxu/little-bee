@@ -1,11 +1,13 @@
 package io.github.johnqxu.littleBee.entity;
 
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 @Builder
@@ -23,6 +25,7 @@ public class ProjectEntity implements Serializable, Comparable<ProjectEntity> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @EqualsAndHashCode.Include
     private Integer id;
 
     @Column(name = "project_name", nullable = false, length = 100)
@@ -56,5 +59,18 @@ public class ProjectEntity implements Serializable, Comparable<ProjectEntity> {
                 return this.getProjectName().compareTo(o.projectName);
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        ProjectEntity project = (ProjectEntity) o;
+        return id != null && Objects.equals(id, project.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

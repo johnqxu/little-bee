@@ -200,18 +200,20 @@ public class PerformService {
                 }
                 List<ProjectEntity> projects = projectRepository.findProjectEntitiesByStartDateAfterAndEndDateBefore(startDate, endDate);
                 for (ProjectEntity project : projects) {
-                    SupplementaryXlsData data = new SupplementaryXlsData();
-                    data.setEmployEndDate(employ.getEndDate());
-                    data.setEmployStartDate(employ.getStartDate());
-                    data.setProject(project.getProjectName());
-                    int trainingTimes = employ.getProjects() == null ? 0 : employ.getProjects().size();
-                    data.setTrainingTimes(trainingTimes);
-                    data.setName(employ.getEmployName());
-                    data.setProjectEndDate(project.getEndDate());
-                    data.setProjectStartDate(project.getStartDate());
-                    data.setCompanyName(employ.getCompanyName());
-                    data.setSchoolHours(project.getSchoolHour());
-                    dataList.add(data);
+                    if(!employ.getProjects().contains(project)) {
+                        SupplementaryXlsData data = new SupplementaryXlsData();
+                        data.setEmployEndDate(employ.getEndDate());
+                        data.setEmployStartDate(employ.getStartDate());
+                        data.setProject(project.getProjectName());
+                        int trainingTimes = employ.getProjects() == null ? 0 : employ.getProjects().size();
+                        data.setTrainingTimes(trainingTimes);
+                        data.setName(employ.getEmployName());
+                        data.setProjectEndDate(project.getEndDate());
+                        data.setProjectStartDate(project.getStartDate());
+                        data.setCompanyName(employ.getCompanyName());
+                        data.setSchoolHours(project.getSchoolHour());
+                        dataList.add(data);
+                    }
                 }
             }
 
