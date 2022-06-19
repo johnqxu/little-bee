@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -77,7 +78,7 @@ public class MainController implements Initializable, ApplicationListener<Applic
         startBtn.setDisable(true);
     }
 
-    public void export() {
+    public void export() throws ParseException {
         exportBtn.setDisable(true);
         performService.export();
         exportBtn.setDisable(false);
