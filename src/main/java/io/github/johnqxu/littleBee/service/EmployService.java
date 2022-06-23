@@ -1,18 +1,30 @@
 package io.github.johnqxu.littleBee.service;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.read.listener.PageReadListener;
 import io.github.johnqxu.littleBee.entity.EmployEntity;
+import io.github.johnqxu.littleBee.event.ProgressChangeEvent;
 import io.github.johnqxu.littleBee.exception.IllegalDataException;
 import io.github.johnqxu.littleBee.model.Employ;
+import io.github.johnqxu.littleBee.model.EmployXlsData;
 import io.github.johnqxu.littleBee.repository.EmployRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import javax.annotation.Resource;
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.Future;
 
 @Slf4j
 @Service
 public class EmployService {
+    @Resource
+    ApplicationContext applicationContext;
+
 
     private final EmployRepository employRepository;
 
@@ -37,7 +49,7 @@ public class EmployService {
         employRepository.deleteAll();
     }
 
-    public void validate() throws IllegalDataException{
+    public void validate() throws IllegalDataException {
         List<String> employNames = employRepository.findDistinctEmployName();
         log.info("" + employNames);
         for (String employName : employNames) {
@@ -53,6 +65,47 @@ public class EmployService {
                 lastEndDate = employEntities.get(j).getEndDate();
             }
         }
+    }
+
+    public void importEmpolys(File employExcel) {
+        Set<Future> futureSet = new HashSet<>(200);
+        setProgress("开始导入员工数据", 0.2);
+        if (employExcel != null) {
+            EasyExcel.read(employExcel, EmployXlsData.class, new PageReadListener<EmployXlsData>(dataList -> {
+                for (EmployXlsData employData : dataList) {
+                    this.asyncImportEmpoly(employData);
+                }
+            })).sheet().doRead();
+        }
+        while (!futureSet.isEmpty()){
+            Iterator<Future> it = futureSet.iterator();
+            while(it.hasNext()){
+                Future f = it.next();
+                if(f.isDone()){
+                    it.remove();
+                }
+            }
+        }
+        setProgress("完成员工数据导入", 0.3);
+    }
+
+    @Async
+    public Future asyncImportEmpoly(EmployXlsData employData) {
+        Employ employ = Employ.builder()
+                .employName(employData.getEmployName())
+                .companyName(employData.getCompanyName())
+                .startDate(employData.getStartDate())
+                .endDate(employData.getEndDate())
+                .idNo(employData.getIdNo())
+                .mobile(employData.getMobile())
+                .status("normal")
+                .build();
+        this.create(employ);
+        return new AsyncResult(employ.getEmployName());
+    }
+
+    private void setProgress(String progressLog, double progress) {
+        applicationContext.publishEvent(new ProgressChangeEvent(this, progressLog, progress));
     }
 
 }

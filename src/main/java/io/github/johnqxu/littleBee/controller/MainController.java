@@ -2,7 +2,9 @@ package io.github.johnqxu.littleBee.controller;
 
 import io.github.johnqxu.littleBee.event.MessageEvent;
 import io.github.johnqxu.littleBee.event.ProgressChangeEvent;
+import io.github.johnqxu.littleBee.service.EmployService;
 import io.github.johnqxu.littleBee.service.PerformService;
+import io.github.johnqxu.littleBee.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -17,14 +19,16 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.*;
 
 @Slf4j
 @Component
 public class MainController implements Initializable, ApplicationListener<ApplicationEvent> {
 
     private final PerformService performService;
+    private final ProjectService projectService;
+    private final EmployService employService;
+
     @FXML
     Button projectBtn;
     @FXML
@@ -45,8 +49,10 @@ public class MainController implements Initializable, ApplicationListener<Applic
 
     private File projectExcel, employExcel, projectEmployExcel;
 
-    public MainController(PerformService performService) {
+    public MainController(PerformService performService, ProjectService projectService, EmployService employService) {
         this.performService = performService;
+        this.projectService = projectService;
+        this.employService = employService;
     }
 
     @Override
@@ -74,9 +80,19 @@ public class MainController implements Initializable, ApplicationListener<Applic
     }
 
     public void performAction() {
-        performService.perform(projectExcel, employExcel, projectEmployExcel);
+        if(employExcel== null){
+            show(Alert.AlertType.ERROR,"请选择员工花名册", ButtonType.OK);
+            return;
+        }
+        if(projectExcel== null){
+            show(Alert.AlertType.ERROR,"请选择课程文件", ButtonType.OK);
+            return;
+        }
         startBtn.setDisable(true);
+        employService.importEmpolys(employExcel);
+        projectService.importProjects(projectExcel);
     }
+
 
     public void export() throws ParseException {
         exportBtn.setDisable(true);
@@ -112,4 +128,6 @@ public class MainController implements Initializable, ApplicationListener<Applic
         }
 
     }
+
+
 }
