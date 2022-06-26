@@ -17,7 +17,7 @@ import java.util.*;
 
 @Service
 @Slf4j
-public class SigninService {
+public class SigninService extends ProgressableService{
 
     private final SigninDataRepository signinRepository;
     private final ProjectRepository projectRepository;

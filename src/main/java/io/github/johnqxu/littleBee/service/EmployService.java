@@ -17,14 +17,13 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class EmployService {
-    @Resource
-    ApplicationContext applicationContext;
-
+public class EmployService extends ProgressableService {
 
     private final EmployRepository employRepository;
 
@@ -67,26 +66,56 @@ public class EmployService {
         }
     }
 
+//    public void importEmpolys(File employExcel) {
+//        Set<Future> futureSet = new HashSet<>(200);
+//        setProgress("开始导入员工数据", 0.2);
+//        if (employExcel != null) {
+//            EasyExcel.read(employExcel, EmployXlsData.class, new PageReadListener<EmployXlsData>(dataList -> {
+//                for (EmployXlsData employData : dataList) {
+//                    this.asyncImportEmpoly(employData);
+//                }
+//            })).sheet().doRead();
+//        }
+//        while (!futureSet.isEmpty()){
+//            Iterator<Future> it = futureSet.iterator();
+//            while(it.hasNext()){
+//                Future f = it.next();
+//                if(f.isDone()){
+//                    it.remove();
+//                }
+//            }
+//        }
+//        setProgress("完成员工数据导入", 0.3);
+//    }
+
     public void importEmpolys(File employExcel) {
-        Set<Future> futureSet = new HashSet<>(200);
-        setProgress("开始导入员工数据", 0.2);
+        List<EmployXlsData> employXlsDataList = new ArrayList<>(200);
+        List<CompletableFuture> employFutures = new ArrayList<>(200);
         if (employExcel != null) {
             EasyExcel.read(employExcel, EmployXlsData.class, new PageReadListener<EmployXlsData>(dataList -> {
                 for (EmployXlsData employData : dataList) {
-                    this.asyncImportEmpoly(employData);
+                    employXlsDataList.add(employData);
                 }
             })).sheet().doRead();
         }
-        while (!futureSet.isEmpty()){
-            Iterator<Future> it = futureSet.iterator();
-            while(it.hasNext()){
-                Future f = it.next();
-                if(f.isDone()){
-                    it.remove();
-                }
-            }
-        }
-        setProgress("完成员工数据导入", 0.3);
+        employFutures = employXlsDataList.stream().map(e -> {
+            CompletableFuture employFuture = CompletableFuture.supplyAsync(() -> {
+                Employ employ = Employ.builder()
+                        .employName(e.getEmployName())
+                        .companyName(e.getCompanyName())
+                        .startDate(e.getStartDate())
+                        .endDate(e.getEndDate())
+                        .idNo(e.getIdNo())
+                        .mobile(e.getMobile())
+                        .status("normal")
+                        .build();
+                this.create(employ);
+                return employ;
+            });
+            return employFuture;
+        }).collect(Collectors.toList());
+
+        CompletableFuture.allOf(employFutures.toArray(new CompletableFuture[employFutures.size()]));
     }
 
     @Async
@@ -102,10 +131,6 @@ public class EmployService {
                 .build();
         this.create(employ);
         return new AsyncResult(employ.getEmployName());
-    }
-
-    private void setProgress(String progressLog, double progress) {
-        applicationContext.publishEvent(new ProgressChangeEvent(this, progressLog, progress));
     }
 
 }

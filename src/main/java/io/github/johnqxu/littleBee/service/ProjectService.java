@@ -22,10 +22,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 @Service
-public class ProjectService {
-
-    @Resource
-    ApplicationContext applicationContext;
+public class ProjectService extends ProgressableService{
 
     private final ProjectRepository projectRepository;
 
@@ -92,10 +89,6 @@ public class ProjectService {
                 .build();
         this.create(project);
         return new AsyncResult<>(projectData.getProjectName());
-    }
-
-    private void setProgress(String progressLog, double progress) {
-        applicationContext.publishEvent(new ProgressChangeEvent(this, progressLog, progress));
     }
 
 }

@@ -10,9 +10,14 @@ public class ProgressChangeEvent extends ApplicationEvent {
 
     private double progress;
 
-    public ProgressChangeEvent(Object source,String progressText, double progress) {
+    public ProgressChangeEvent(Object source, String progressText, double progress) {
         super(source);
         this.progress = progress;
+        this.progressText = progressText;
+    }
+
+    public ProgressChangeEvent(Object source, String progressText) {
+        super(source);
         this.progressText = progressText;
     }
 }

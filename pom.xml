@@ -25,6 +25,7 @@
         <javafx-maven-plugin.version>0.0.5</javafx-maven-plugin.version>
         <commons-io.version>2.11.0</commons-io.version>
         <hibernate-types.version>2.12.1</hibernate-types.version>
+        <hikari-cp.version>5.0.1</hikari-cp.version>
         <hsqldb.version>2.6.1</hsqldb.version>
     </properties>
 
@@ -69,6 +70,11 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikari-cp.version}</version>
         </dependency>
 
         <dependency>

@@ -52,7 +52,7 @@ public class PerformService {
     }
 
 
-    private void initDatabase() {
+    public void initDatabase() {
         employService.deleteAll();
         projectService.deleteAll();
         signinService.deleteAll();

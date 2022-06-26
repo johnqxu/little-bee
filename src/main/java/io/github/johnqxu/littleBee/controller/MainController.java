@@ -1,5 +1,7 @@
 package io.github.johnqxu.littleBee.controller;
 
+import io.github.johnqxu.littleBee.event.HandlerEnum;
+import io.github.johnqxu.littleBee.event.HandlingProcessEvent;
 import io.github.johnqxu.littleBee.event.MessageEvent;
 import io.github.johnqxu.littleBee.event.ProgressChangeEvent;
 import io.github.johnqxu.littleBee.service.EmployService;
@@ -12,14 +14,18 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 @Slf4j
 @Component
@@ -28,7 +34,8 @@ public class MainController implements Initializable, ApplicationListener<Applic
     private final PerformService performService;
     private final ProjectService projectService;
     private final EmployService employService;
-
+    @Resource
+    ApplicationContext applicationContext;
     @FXML
     Button projectBtn;
     @FXML
@@ -47,7 +54,9 @@ public class MainController implements Initializable, ApplicationListener<Applic
     TextArea progressLog;
     private Alert alert;
 
-    private File projectExcel, employExcel, projectEmployExcel;
+    private File projectExcel;
+    private File employExcel;
+    private File signinExcel;
 
     public MainController(PerformService performService, ProjectService projectService, EmployService employService) {
         this.performService = performService;
@@ -68,7 +77,7 @@ public class MainController implements Initializable, ApplicationListener<Applic
     }
 
     public void selectProjectEmployExcel() {
-        projectEmployExcel = selectExcel();
+        signinExcel = selectExcel();
     }
 
     private File selectExcel() {
@@ -80,17 +89,23 @@ public class MainController implements Initializable, ApplicationListener<Applic
     }
 
     public void performAction() {
-        if(employExcel== null){
-            show(Alert.AlertType.ERROR,"请选择员工花名册", ButtonType.OK);
+        if (employExcel == null) {
+            show(Alert.AlertType.ERROR, "请选择员工花名册", ButtonType.OK);
             return;
         }
-        if(projectExcel== null){
-            show(Alert.AlertType.ERROR,"请选择课程文件", ButtonType.OK);
+        if (projectExcel == null) {
+            show(Alert.AlertType.ERROR, "请选择课程文件", ButtonType.OK);
             return;
         }
-        startBtn.setDisable(true);
-        employService.importEmpolys(employExcel);
-        projectService.importProjects(projectExcel);
+        if (signinExcel == null) {
+            show(Alert.AlertType.ERROR, "请选择参训人员文件", ButtonType.OK);
+            return;
+        }
+        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
+        beanFactory.registerSingleton("employXlsFile", employExcel);
+        beanFactory.registerSingleton("projectXlsFile", projectExcel);
+        beanFactory.registerSingleton("signinXlsFile", signinExcel);
+        applicationContext.publishEvent(new HandlingProcessEvent(this, HandlerEnum.getFirstHandler()));
     }
 
 
@@ -114,7 +129,9 @@ public class MainController implements Initializable, ApplicationListener<Applic
     @Override
     public void onApplicationEvent(ApplicationEvent applicationEvent) {
         if (applicationEvent instanceof ProgressChangeEvent progressChangeEvent) {
-            progressBar.setProgress(progressChangeEvent.getProgress());
+            if (progressChangeEvent.getProgress() > 0) {
+                progressBar.setProgress(progressChangeEvent.getProgress());
+            }
             String log = progressLog.getText();
             log = String.join("\n", progressChangeEvent.getProgressText(), log);
             progressLog.setText(log);
@@ -126,7 +143,6 @@ public class MainController implements Initializable, ApplicationListener<Applic
             log = String.join("\n", validationEvent.getValidateMessage(), log);
             progressLog.setText(log);
         }
-
     }
 
 
