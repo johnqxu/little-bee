@@ -11,6 +11,6 @@ public interface EmployMapper {
 
     EmployDto toDtoFromEntity(EmployEntity employEntity);
 
-    @Mapping(target = "normal")
+    @Mapping(target = "status",constant = "normal")
     EmployDto toDtoFromXls(EmployXlsData employXlsData);
 }
