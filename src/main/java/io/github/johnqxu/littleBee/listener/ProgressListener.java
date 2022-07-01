@@ -53,6 +53,7 @@ public class ProgressListener implements ApplicationListener<HandlingProcessEven
                 projectService.importProjects(projectXlsFile);
                 break;
             case IMPORT_SIGNIN:
+                signinService.importSigninData(signinXlsFile);
                 break;
             case VALIDATE_EMPLOY:
                 break;

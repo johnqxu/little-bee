@@ -1,45 +1,52 @@
 package io.github.johnqxu.littleBee.service;
 
-import io.github.johnqxu.littleBee.entity.EmployEntity;
-import io.github.johnqxu.littleBee.entity.ProjectEntity;
-import io.github.johnqxu.littleBee.entity.SigninDataEntity;
 import io.github.johnqxu.littleBee.exception.IllegalDataException;
-import io.github.johnqxu.littleBee.model.SigninData;
+import io.github.johnqxu.littleBee.model.SigninXlsData;
+import io.github.johnqxu.littleBee.model.dto.SigninDto;
+import io.github.johnqxu.littleBee.model.entity.EmployEntity;
+import io.github.johnqxu.littleBee.model.entity.ProjectEntity;
+import io.github.johnqxu.littleBee.model.entity.SigninDataEntity;
+import io.github.johnqxu.littleBee.model.mapper.SigninMapper;
 import io.github.johnqxu.littleBee.repository.EmployRepository;
 import io.github.johnqxu.littleBee.repository.ProjectRepository;
 import io.github.johnqxu.littleBee.repository.SigninDataRepository;
+import io.github.johnqxu.littleBee.util.XlsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
-public class SigninService extends ProgressableService{
+public class SigninService extends ProgressableService {
 
     private final SigninDataRepository signinRepository;
     private final ProjectRepository projectRepository;
     private final EmployRepository employRepository;
+    private final SigninMapper signinMapper;
 
     @Resource
     ApplicationContext applicationContext;
 
-    public SigninService(SigninDataRepository projectRepository, ProjectRepository projectRepository1, EmployRepository employRepository) {
+    public SigninService(SigninDataRepository projectRepository, ProjectRepository projectRepository1, EmployRepository employRepository, SigninMapper signinMapper) {
         this.signinRepository = projectRepository;
         this.projectRepository = projectRepository1;
         this.employRepository = employRepository;
+        this.signinMapper = signinMapper;
     }
 
     public void deleteAll() {
         signinRepository.deleteAll();
     }
 
-    public void create(SigninData signinData) {
+    public void create(SigninDto signinDto) {
         SigninDataEntity signinDataEntity = SigninDataEntity.builder()
-                .projectName(signinData.getProjectName())
-                .employName(signinData.getEmployName())
+                .projectName(signinDto.getProjectName())
+                .employName(signinDto.getEmployName())
                 .adjustFlag("default")
                 .build();
         signinRepository.save(signinDataEntity);
@@ -83,10 +90,19 @@ public class SigninService extends ProgressableService{
             log.info("项目:{},课时:{}", p.getProjectName(), p.getSchoolHour());
             if (i > 3) {
                 ip.remove();
-                log.info("删除项目:{},当前容量:{}",p.getProjectName(),sortedProjects.size());
+                log.info("删除项目:{},当前容量:{}", p.getProjectName(), sortedProjects.size());
             }
         }
         return sortedProjects;
+    }
+
+    public void importSigninData(File signinExcel) {
+        List<SigninXlsData> signinXlsDataList = XlsUtil.readXls(signinExcel, SigninXlsData.class, 1000);
+        CompletableFuture.allOf(signinXlsDataList.stream().map(e -> CompletableFuture.supplyAsync(() -> {
+            SigninDto signinDto = signinMapper.toDtoFromXls(e);
+            this.create(signinDto);
+            return signinDto;
+        })).toArray(CompletableFuture[]::new));
     }
 
 }

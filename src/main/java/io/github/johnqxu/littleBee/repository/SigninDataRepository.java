@@ -1,6 +1,6 @@
 package io.github.johnqxu.littleBee.repository;
 
-import io.github.johnqxu.littleBee.entity.SigninDataEntity;
+import io.github.johnqxu.littleBee.model.entity.SigninDataEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

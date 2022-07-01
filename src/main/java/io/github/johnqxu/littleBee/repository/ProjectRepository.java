@@ -1,6 +1,6 @@
 package io.github.johnqxu.littleBee.repository;
 
-import io.github.johnqxu.littleBee.entity.ProjectEntity;
+import io.github.johnqxu.littleBee.model.entity.ProjectEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

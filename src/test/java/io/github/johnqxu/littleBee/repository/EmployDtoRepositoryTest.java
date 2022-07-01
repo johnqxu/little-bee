@@ -1,7 +1,7 @@
 package io.github.johnqxu.littleBee.repository;
 
-import io.github.johnqxu.littleBee.entity.EmployEntity;
-import io.github.johnqxu.littleBee.entity.ProjectEntity;
+import io.github.johnqxu.littleBee.model.entity.EmployEntity;
+import io.github.johnqxu.littleBee.model.entity.ProjectEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,7 @@ import java.util.Set;
 @RunWith(SpringRunner.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Slf4j
-public class EmployRepositoryTest {
+public class EmployDtoRepositoryTest {
 
     @Resource
     EmployRepository employRepository;

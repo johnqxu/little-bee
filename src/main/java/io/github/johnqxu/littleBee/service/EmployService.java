@@ -1,25 +1,20 @@
 package io.github.johnqxu.littleBee.service;
 
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.read.listener.PageReadListener;
-import io.github.johnqxu.littleBee.entity.EmployEntity;
-import io.github.johnqxu.littleBee.event.ProgressChangeEvent;
 import io.github.johnqxu.littleBee.exception.IllegalDataException;
-import io.github.johnqxu.littleBee.model.Employ;
 import io.github.johnqxu.littleBee.model.EmployXlsData;
+import io.github.johnqxu.littleBee.model.dto.EmployDto;
+import io.github.johnqxu.littleBee.model.entity.EmployEntity;
+import io.github.johnqxu.littleBee.model.mapper.EmployMapper;
 import io.github.johnqxu.littleBee.repository.EmployRepository;
+import io.github.johnqxu.littleBee.util.XlsUtil;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.io.File;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,20 +22,23 @@ public class EmployService extends ProgressableService {
 
     private final EmployRepository employRepository;
 
-    public EmployService(EmployRepository employRepository) {
+    private final EmployMapper employMapper;
+
+    public EmployService(EmployRepository employRepository, EmployMapper employMapper) {
         this.employRepository = employRepository;
+        this.employMapper = employMapper;
     }
 
-    public void create(Employ employ) {
+    public void create(EmployDto employDto) {
         EmployEntity employEntity = new EmployEntity();
-        employEntity.setEmployName(employ.getEmployName().trim());
-        employEntity.setCompanyName(employ.getCompanyName().trim());
-        employEntity.setStartDate(employ.getStartDate());
-        if (employ.getEndDate() != null) {
-            employEntity.setEndDate(employ.getEndDate());
+        employEntity.setEmployName(employDto.getEmployName().trim());
+        employEntity.setCompanyName(employDto.getCompanyName().trim());
+        employEntity.setStartDate(employDto.getStartDate());
+        if (employDto.getEndDate() != null) {
+            employEntity.setEndDate(employDto.getEndDate());
         }
-        employEntity.setIdNo(employ.getIdNo());
-        employEntity.setMobile(employ.getMobile());
+        employEntity.setIdNo(employDto.getIdNo());
+        employEntity.setMobile(employDto.getMobile());
         employRepository.save(employEntity);
     }
 
@@ -66,71 +64,13 @@ public class EmployService extends ProgressableService {
         }
     }
 
-//    public void importEmpolys(File employExcel) {
-//        Set<Future> futureSet = new HashSet<>(200);
-//        setProgress("开始导入员工数据", 0.2);
-//        if (employExcel != null) {
-//            EasyExcel.read(employExcel, EmployXlsData.class, new PageReadListener<EmployXlsData>(dataList -> {
-//                for (EmployXlsData employData : dataList) {
-//                    this.asyncImportEmpoly(employData);
-//                }
-//            })).sheet().doRead();
-//        }
-//        while (!futureSet.isEmpty()){
-//            Iterator<Future> it = futureSet.iterator();
-//            while(it.hasNext()){
-//                Future f = it.next();
-//                if(f.isDone()){
-//                    it.remove();
-//                }
-//            }
-//        }
-//        setProgress("完成员工数据导入", 0.3);
-//    }
-
-    public void importEmpolys(File employExcel) {
-        List<EmployXlsData> employXlsDataList = new ArrayList<>(200);
-        List<CompletableFuture> employFutures = new ArrayList<>(200);
-        if (employExcel != null) {
-            EasyExcel.read(employExcel, EmployXlsData.class, new PageReadListener<EmployXlsData>(dataList -> {
-                for (EmployXlsData employData : dataList) {
-                    employXlsDataList.add(employData);
-                }
-            })).sheet().doRead();
-        }
-        employFutures = employXlsDataList.stream().map(e -> {
-            CompletableFuture employFuture = CompletableFuture.supplyAsync(() -> {
-                Employ employ = Employ.builder()
-                        .employName(e.getEmployName())
-                        .companyName(e.getCompanyName())
-                        .startDate(e.getStartDate())
-                        .endDate(e.getEndDate())
-                        .idNo(e.getIdNo())
-                        .mobile(e.getMobile())
-                        .status("normal")
-                        .build();
-                this.create(employ);
-                return employ;
-            });
-            return employFuture;
-        }).collect(Collectors.toList());
-
-        CompletableFuture.allOf(employFutures.toArray(new CompletableFuture[employFutures.size()]));
-    }
-
-    @Async
-    public Future asyncImportEmpoly(EmployXlsData employData) {
-        Employ employ = Employ.builder()
-                .employName(employData.getEmployName())
-                .companyName(employData.getCompanyName())
-                .startDate(employData.getStartDate())
-                .endDate(employData.getEndDate())
-                .idNo(employData.getIdNo())
-                .mobile(employData.getMobile())
-                .status("normal")
-                .build();
-        this.create(employ);
-        return new AsyncResult(employ.getEmployName());
+    public void importEmpolys(@NonNull File employExcel) {
+        List<EmployXlsData> employXlsDataList = XlsUtil.readXls(employExcel, EmployXlsData.class, 200);
+        CompletableFuture.allOf(employXlsDataList.stream().map(e -> CompletableFuture.supplyAsync(() -> {
+            EmployDto employDto = employMapper.toDtoFromXls(e);
+            this.create(employDto);
+            return employDto;
+        })).toArray(CompletableFuture[]::new));
     }
 
 }

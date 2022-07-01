@@ -1,4 +1,4 @@
-package io.github.johnqxu.littleBee.entity;
+package io.github.johnqxu.littleBee.model.entity;
 
 import lombok.*;
 

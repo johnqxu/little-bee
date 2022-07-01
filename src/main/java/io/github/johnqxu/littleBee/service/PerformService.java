@@ -5,8 +5,11 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.excel.write.metadata.WriteSheet;
-import io.github.johnqxu.littleBee.entity.EmployEntity;
-import io.github.johnqxu.littleBee.entity.ProjectEntity;
+import io.github.johnqxu.littleBee.model.dto.EmployDto;
+import io.github.johnqxu.littleBee.model.dto.ProjectDto;
+import io.github.johnqxu.littleBee.model.dto.SigninDto;
+import io.github.johnqxu.littleBee.model.entity.EmployEntity;
+import io.github.johnqxu.littleBee.model.entity.ProjectEntity;
 import io.github.johnqxu.littleBee.event.MessageEvent;
 import io.github.johnqxu.littleBee.event.ProgressChangeEvent;
 import io.github.johnqxu.littleBee.exception.IllegalDataException;
@@ -87,14 +90,14 @@ public class PerformService {
         if (projectExcel != null) {
             EasyExcel.read(projectExcel, ProjectXlsData.class, new PageReadListener<ProjectXlsData>(dataList -> {
                 for (ProjectXlsData projectData : dataList) {
-                    Project project = Project.builder()
+                    ProjectDto projectDto = ProjectDto.builder()
                             .projectName(projectData.getProjectName().trim())
                             .startDate(projectData.getStartDate())
                             .endDate(projectData.getEndDate())
                             .schoolHour(projectData.getSchoolHour())
                             .priority(projectData.getPriority())
                             .build();
-                    projectService.create(project);
+                    projectService.create(projectDto);
                 }
             })).sheet().doRead();
         }
@@ -106,7 +109,7 @@ public class PerformService {
             EasyExcel.read(employExcel, EmployXlsData.class, new PageReadListener<EmployXlsData>(dataList -> {
                 for (EmployXlsData employData : dataList) {
                     log.info("处理:{}", employData.getEmployName());
-                    Employ employ = Employ.builder()
+                    EmployDto employDto = EmployDto.builder()
                             .employName(employData.getEmployName())
                             .companyName(employData.getCompanyName())
                             .startDate(employData.getStartDate())
@@ -115,7 +118,7 @@ public class PerformService {
                             .mobile(employData.getMobile())
                             .status("normal")
                             .build();
-                    employService.create(employ);
+                    employService.create(employDto);
                 }
             })).sheet().doRead();
         }
@@ -124,11 +127,11 @@ public class PerformService {
         if (projectEmployExcel != null) {
             EasyExcel.read(projectEmployExcel, SigninXlsData.class, new PageReadListener<SigninXlsData>(dataList -> {
                 for (SigninXlsData signinXlsData : dataList) {
-                    SigninData signinData = SigninData.builder()
+                    SigninDto signinDto = SigninDto.builder()
                             .projectName(signinXlsData.getProjectName().trim())
                             .employName(signinXlsData.getEmployName().trim())
                             .build();
-                    signinService.create(signinData);
+                    signinService.create(signinDto);
                 }
             })).sheet().doRead();
         }

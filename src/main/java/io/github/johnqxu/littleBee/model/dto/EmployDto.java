@@ -1,15 +1,14 @@
-package io.github.johnqxu.littleBee.model;
+package io.github.johnqxu.littleBee.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.util.Date;
 
 @Data
 @Builder
-public class Employ {
+public class EmployDto {
 
     private int employId;
 

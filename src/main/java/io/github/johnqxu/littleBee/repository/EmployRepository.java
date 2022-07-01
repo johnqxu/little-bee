@@ -1,8 +1,6 @@
 package io.github.johnqxu.littleBee.repository;
 
-import io.github.johnqxu.littleBee.entity.EmployEntity;
-import io.github.johnqxu.littleBee.model.Employ;
-import jdk.jfr.Registered;
+import io.github.johnqxu.littleBee.model.entity.EmployEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

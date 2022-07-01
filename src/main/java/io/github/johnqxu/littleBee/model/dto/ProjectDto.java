@@ -1,4 +1,4 @@
-package io.github.johnqxu.littleBee.model;
+package io.github.johnqxu.littleBee.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Data
 @Builder
-public class Project {
+public class ProjectDto {
 
     private int projectId;
 
