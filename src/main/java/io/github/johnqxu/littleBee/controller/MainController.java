@@ -90,13 +90,24 @@ public class MainController implements Initializable, ApplicationListener<Applic
     }
 
     public void performAction() {
-        Optional.ofNullable(employExcel).ifPresentOrElse(null, () -> show(Alert.AlertType.ERROR, "请选择员工花名册", ButtonType.OK));
-        Optional.ofNullable(projectExcel).ifPresentOrElse(null, () -> show(Alert.AlertType.ERROR, "请选择课程文件", ButtonType.OK));
-        Optional.ofNullable(signinExcel).ifPresentOrElse(null, () -> show(Alert.AlertType.ERROR, "请选择参训人员文件", ButtonType.OK));
+        Optional.ofNullable(employExcel).ifPresentOrElse(x -> {
+        }, () -> show(Alert.AlertType.ERROR, "请选择员工花名册", ButtonType.OK));
+        Optional.ofNullable(projectExcel).ifPresentOrElse(x -> {
+        }, () -> show(Alert.AlertType.ERROR, "请选择课程文件", ButtonType.OK));
+        Optional.ofNullable(signinExcel).ifPresentOrElse(x -> {
+        }, () -> show(Alert.AlertType.ERROR, "请选择参训人员文件", ButtonType.OK));
+
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
-        Optional.ofNullable(beanFactory.getBean("employXlsFile")).ifPresentOrElse(null, () -> beanFactory.registerSingleton("employXlsFile", employExcel));
-        Optional.ofNullable(beanFactory.getBean("projectXlsFile")).ifPresentOrElse(null, () -> beanFactory.registerSingleton("projectXlsFile", projectExcel));
-        Optional.ofNullable(beanFactory.getBean("signinXlsFile")).ifPresentOrElse(null, () -> beanFactory.registerSingleton("signinXlsFile", signinExcel));
+        if (!beanFactory.containsBeanDefinition("employXlsFile")) {
+            beanFactory.registerSingleton("employXlsFile", employExcel);
+        }
+        if (!beanFactory.containsBeanDefinition("projectXlsFile")) {
+            beanFactory.registerSingleton("projectXlsFile", projectExcel);
+        }
+        if (!beanFactory.containsBeanDefinition("signinXlsFile")) {
+            beanFactory.registerSingleton("signinXlsFile", signinExcel);
+        }
+
         applicationContext.publishEvent(new HandlingProcessEvent(this, HandlerEnum.getFirstHandler()));
     }
 

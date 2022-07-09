@@ -27,6 +27,7 @@
         <hibernate-types.version>2.12.1</hibernate-types.version>
         <hikari-cp.version>5.0.1</hikari-cp.version>
         <hsqldb.version>2.6.1</hsqldb.version>
+        <lombok.version>1.18.24</lombok.version>
         <mapstruct.version>1.5.2.Final</mapstruct.version>
     </properties>
 
@@ -51,12 +52,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.hsqldb</groupId>-->
-        <!--            <artifactId>hsqldb</artifactId>-->
-        <!--            <version>${hsqldb.version}</version>-->
-        <!--            <scope>runtime</scope>-->
-        <!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.hsqldb</groupId>-->
+<!--            <artifactId>hsqldb</artifactId>-->
+<!--            <version>${hsqldb.version}</version>-->
+<!--            <scope>runtime</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -77,7 +78,6 @@
             <artifactId>HikariCP</artifactId>
             <version>${hikari-cp.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.vladmihalcea</groupId>
             <artifactId>hibernate-types-52</artifactId>
@@ -106,7 +106,9 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
             <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -156,9 +158,14 @@
                     <target>16</target>
                     <annotationProcessorPaths>
                         <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
+                            <version>1.5.2.Final</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
