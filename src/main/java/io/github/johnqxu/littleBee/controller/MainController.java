@@ -4,9 +4,7 @@ import io.github.johnqxu.littleBee.event.HandlerEnum;
 import io.github.johnqxu.littleBee.event.HandlingProcessEvent;
 import io.github.johnqxu.littleBee.event.MessageEvent;
 import io.github.johnqxu.littleBee.event.ProgressChangeEvent;
-import io.github.johnqxu.littleBee.service.EmployService;
 import io.github.johnqxu.littleBee.service.PerformService;
-import io.github.johnqxu.littleBee.service.ProjectService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -33,8 +31,6 @@ import java.util.ResourceBundle;
 public class MainController implements Initializable, ApplicationListener<ApplicationEvent> {
 
     private final PerformService performService;
-    private final ProjectService projectService;
-    private final EmployService employService;
     @Resource
     ApplicationContext applicationContext;
     @FXML
@@ -59,10 +55,8 @@ public class MainController implements Initializable, ApplicationListener<Applic
     private File employExcel;
     private File signinExcel;
 
-    public MainController(PerformService performService, ProjectService projectService, EmployService employService) {
+    public MainController(PerformService performService) {
         this.performService = performService;
-        this.projectService = projectService;
-        this.employService = employService;
     }
 
     @Override
