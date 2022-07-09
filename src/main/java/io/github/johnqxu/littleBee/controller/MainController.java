@@ -25,6 +25,7 @@ import java.io.File;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 @Slf4j
@@ -89,25 +90,15 @@ public class MainController implements Initializable, ApplicationListener<Applic
     }
 
     public void performAction() {
-        if (employExcel == null) {
-            show(Alert.AlertType.ERROR, "请选择员工花名册", ButtonType.OK);
-            return;
-        }
-        if (projectExcel == null) {
-            show(Alert.AlertType.ERROR, "请选择课程文件", ButtonType.OK);
-            return;
-        }
-        if (signinExcel == null) {
-            show(Alert.AlertType.ERROR, "请选择参训人员文件", ButtonType.OK);
-            return;
-        }
+        Optional.ofNullable(employExcel).ifPresentOrElse(null, () -> show(Alert.AlertType.ERROR, "请选择员工花名册", ButtonType.OK));
+        Optional.ofNullable(projectExcel).ifPresentOrElse(null, () -> show(Alert.AlertType.ERROR, "请选择课程文件", ButtonType.OK));
+        Optional.ofNullable(signinExcel).ifPresentOrElse(null, () -> show(Alert.AlertType.ERROR, "请选择参训人员文件", ButtonType.OK));
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
-        beanFactory.registerSingleton("employXlsFile", employExcel);
-        beanFactory.registerSingleton("projectXlsFile", projectExcel);
-        beanFactory.registerSingleton("signinXlsFile", signinExcel);
+        Optional.ofNullable(beanFactory.getBean("employXlsFile")).ifPresentOrElse(null, () -> beanFactory.registerSingleton("employXlsFile", employExcel));
+        Optional.ofNullable(beanFactory.getBean("projectXlsFile")).ifPresentOrElse(null, () -> beanFactory.registerSingleton("projectXlsFile", projectExcel));
+        Optional.ofNullable(beanFactory.getBean("signinXlsFile")).ifPresentOrElse(null, () -> beanFactory.registerSingleton("signinXlsFile", signinExcel));
         applicationContext.publishEvent(new HandlingProcessEvent(this, HandlerEnum.getFirstHandler()));
     }
-
 
     public void export() throws ParseException {
         exportBtn.setDisable(true);
