@@ -1,9 +1,8 @@
 package io.github.johnqxu.littleBee.controller;
 
-import io.github.johnqxu.littleBee.event.HandlerEnum;
-import io.github.johnqxu.littleBee.event.HandlingProcessEvent;
 import io.github.johnqxu.littleBee.event.MessageEvent;
 import io.github.johnqxu.littleBee.event.ProgressChangeEvent;
+import io.github.johnqxu.littleBee.event.StartProcessEvent;
 import io.github.johnqxu.littleBee.service.PerformService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,7 +11,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -84,25 +82,26 @@ public class MainController implements Initializable, ApplicationListener<Applic
     }
 
     public void performAction() {
-        Optional.ofNullable(employExcel).ifPresentOrElse(x -> {
-        }, () -> show(Alert.AlertType.ERROR, "请选择员工花名册", ButtonType.OK));
-        Optional.ofNullable(projectExcel).ifPresentOrElse(x -> {
-        }, () -> show(Alert.AlertType.ERROR, "请选择课程文件", ButtonType.OK));
-        Optional.ofNullable(signinExcel).ifPresentOrElse(x -> {
-        }, () -> show(Alert.AlertType.ERROR, "请选择参训人员文件", ButtonType.OK));
+        checkXlsFile(projectExcel, "课程");
+        checkXlsFile(employExcel, "员工");
+        checkXlsFile(signinExcel, "签到");
+        applicationContext.publishEvent(new StartProcessEvent(this, employExcel, projectExcel, signinExcel));
+    }
 
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
-        if (!beanFactory.containsBeanDefinition("employXlsFile")) {
-            beanFactory.registerSingleton("employXlsFile", employExcel);
-        }
-        if (!beanFactory.containsBeanDefinition("projectXlsFile")) {
-            beanFactory.registerSingleton("projectXlsFile", projectExcel);
-        }
-        if (!beanFactory.containsBeanDefinition("signinXlsFile")) {
-            beanFactory.registerSingleton("signinXlsFile", signinExcel);
-        }
-
-        applicationContext.publishEvent(new HandlingProcessEvent(this, HandlerEnum.getFirstHandler()));
+    private void checkXlsFile(File file, String fileDesc) {
+        Optional.ofNullable(file).ifPresentOrElse(
+                x -> {
+                    if (!(file.exists()
+                            && file.isFile()
+                            && file.canRead()
+                            && (file.getName().toLowerCase().endsWith("xls") || file.getName().toLowerCase().endsWith("xlsx")))) {
+                        throw new IllegalArgumentException("错误的" + fileDesc + "文件");
+                    }
+                },
+                () -> {
+                    throw new IllegalArgumentException(fileDesc + "文件为空");
+                }
+        );
     }
 
     public void export() throws ParseException {

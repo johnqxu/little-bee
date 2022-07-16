@@ -35,7 +35,7 @@ public class StageListener implements ApplicationListener<StageReadyEvent> {
             var fxmlLoader = new FXMLLoader(url);
             fxmlLoader.setControllerFactory(applicationContext::getBean);
             Parent root = fxmlLoader.load();
-            var scene = new Scene(root, 615, 320);
+            var scene = new Scene(root, 640, 320);
             stage.setScene(scene);
             stage.setMinWidth(615);
             stage.setMinHeight(320);

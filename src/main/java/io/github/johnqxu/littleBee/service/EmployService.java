@@ -48,19 +48,25 @@ public class EmployService extends ProgressableService {
 
     public void validate() throws IllegalDataException {
         List<String> employNames = employRepository.findDistinctEmployName();
-        log.info("" + employNames);
-        for (String employName : employNames) {
-            List<EmployEntity> employEntities = employRepository.findEmployEntitiesByEmployNameOrderByStartDateAsc(employName);
-            Date lastEndDate = null;
-            for (int j = 0; j < employEntities.size(); j++) {
-                if (j > 0) {
-                    if (lastEndDate == null || (employEntities.get(j).getStartDate() != null && employEntities.get(j).getStartDate().before(lastEndDate))) {
-                        log.info("lastDate:{},startDate:{},endDate{}", lastEndDate, employEntities.get(j).getStartDate(), employEntities.get(j).getEndDate());
-                        throw new IllegalDataException("员工社保日期错误:" + employEntities.get(j).getEmployName());
-                    }
+        CompletableFuture.allOf(employNames.stream().map(e -> CompletableFuture.supplyAsync(
+                () -> {
+                    validateEmployData(e);
+                    return null;
                 }
-                lastEndDate = employEntities.get(j).getEndDate();
+        )).toArray(CompletableFuture[]::new));
+    }
+
+    private void validateEmployData(String employName) {
+        List<EmployEntity> employEntities = employRepository.findEmployEntitiesByEmployNameOrderByStartDateAsc(employName);
+        Date lastEndDate = null;
+        for (int j = 0; j < employEntities.size(); j++) {
+            if (j > 0) {
+                if (lastEndDate == null || (employEntities.get(j).getStartDate() != null && employEntities.get(j).getStartDate().before(lastEndDate))) {
+                    log.info("lastDate:{},startDate:{},endDate{}", lastEndDate, employEntities.get(j).getStartDate(), employEntities.get(j).getEndDate());
+                    throw new IllegalDataException("员工社保日期错误:" + employEntities.get(j).getEmployName());
+                }
             }
+            lastEndDate = employEntities.get(j).getEndDate();
         }
     }
 
