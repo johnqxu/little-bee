@@ -7,6 +7,7 @@ import io.github.johnqxu.littleBee.model.entity.ProjectEntity;
 import io.github.johnqxu.littleBee.model.mapper.ProjectMapper;
 import io.github.johnqxu.littleBee.repository.ProjectRepository;
 import io.github.johnqxu.littleBee.util.XlsUtil;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -29,7 +30,8 @@ public class ProjectService extends ProgressableService {
         projectRepository.deleteAll();
     }
 
-    public void create(ProjectDto projectDto) {
+    @Async
+    public CompletableFuture<ProjectEntity> create(ProjectDto projectDto) {
         ProjectEntity projectEntity = ProjectEntity.builder()
                 .projectName(projectDto.getProjectName())
                 .startDate(projectDto.getStartDate())
@@ -38,6 +40,7 @@ public class ProjectService extends ProgressableService {
                 .priority(projectDto.getPriority())
                 .build();
         projectRepository.save(projectEntity);
+        return CompletableFuture.completedFuture(projectEntity);
     }
 
     public void validate() throws IllegalDataException {

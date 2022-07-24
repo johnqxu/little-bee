@@ -51,7 +51,6 @@ public class EmployService extends ProgressableService {
 
     public void validate() throws IllegalDataException {
         List<String> employNames = employRepository.findDistinctEmployName();
-        log.info("validate employs:{}", employNames.size());
         CompletableFuture.allOf(employNames.stream().map(e -> CompletableFuture.supplyAsync(
                 () -> {
                     validateEmployData(e);
