@@ -47,7 +47,11 @@ public class ProjectService extends ProgressableService {
 
     public void validate() throws IllegalDataException {
         List<ProjectEntity> projects = projectRepository.findAll();
-        CompletableFuture.allOf(projects.stream().map(e -> CompletableFuture.supplyAsync(() -> this.validate(e))).toArray(CompletableFuture[]::new)).join();
+        CompletableFuture.allOf(
+                projects.stream().map(
+                        e -> CompletableFuture.supplyAsync(() -> this.validate(e))
+                ).toArray(CompletableFuture[]::new)
+        ).join();
     }
 
     public void importProjects(File projectExcel) {

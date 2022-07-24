@@ -13,6 +13,7 @@ import io.github.johnqxu.littleBee.repository.SigninDataRepository;
 import io.github.johnqxu.littleBee.util.XlsUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -43,32 +44,31 @@ public class SigninService extends ProgressableService {
         signinRepository.deleteAll();
     }
 
-    public void create(SigninDto signinDto) {
-        SigninDataEntity signinDataEntity = SigninDataEntity.builder()
-                .projectName(signinDto.getProjectName())
-                .employName(signinDto.getEmployName())
-                .adjustFlag("default")
-                .build();
+    @Async
+    public CompletableFuture<SigninDataEntity> create(SigninDto signinDto) {
+        SigninDataEntity signinDataEntity = SigninDataEntity.builder().projectName(signinDto.getProjectName()).employName(signinDto.getEmployName()).adjustFlag("default").build();
         signinRepository.save(signinDataEntity);
+        return CompletableFuture.completedFuture(signinDataEntity);
+    }
+
+    @Async
+    CompletableFuture<Boolean> validate(SigninDataEntity siginData) {
+        ProjectEntity projectEntity = projectRepository.findProjectEntityByProjectName(siginData.getProjectName());
+        if (projectEntity == null) {
+            throw new IllegalDataException("签到信息错误，没有找到培训项目:" + siginData.getEmployName() + "-" + siginData.getProjectName());
+        }
+        return CompletableFuture.completedFuture(true);
     }
 
     public void validate() throws IllegalDataException {
         List<SigninDataEntity> signinDataEntities = signinRepository.findAll();
-        for (SigninDataEntity signinDataEntity : signinDataEntities) {
-            ProjectEntity projectEntity = projectRepository.findProjectEntityByProjectName(signinDataEntity.getProjectName());
-            if (projectEntity == null) {
-                throw new IllegalDataException("签到信息错误，没有找到培训项目:" + signinDataEntity.getEmployName() + "-" + signinDataEntity.getProjectName());
-            }
-        }
+        CompletableFuture.allOf(signinDataEntities.stream().map(e -> CompletableFuture.supplyAsync(() -> this.validate(e))).toArray(CompletableFuture[]::new)).join();
     }
 
     public void assign() {
         List<EmployEntity> employEntities = employRepository.findAll();
-        log.info("totle employs:{}",employEntities.size());
         for (EmployEntity employEntity : employEntities) {
-            log.info("employ:{}",employEntity.getEmployName());
             Set<ProjectEntity> employProjects = fetchEmployProjects(employEntity);
-            log.info("projects:{}",employProjects);
             employEntity.setProjects(employProjects);
             employRepository.save(employEntity);
         }
