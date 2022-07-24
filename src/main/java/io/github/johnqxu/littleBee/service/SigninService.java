@@ -12,11 +12,9 @@ import io.github.johnqxu.littleBee.repository.ProjectRepository;
 import io.github.johnqxu.littleBee.repository.SigninDataRepository;
 import io.github.johnqxu.littleBee.util.XlsUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -29,9 +27,6 @@ public class SigninService extends ProgressableService {
     private final ProjectRepository projectRepository;
     private final EmployRepository employRepository;
     private final SigninMapper signinMapper;
-
-    @Resource
-    ApplicationContext applicationContext;
 
     public SigninService(SigninDataRepository projectRepository, ProjectRepository projectRepository1, EmployRepository employRepository, SigninMapper signinMapper) {
         this.signinRepository = projectRepository;
