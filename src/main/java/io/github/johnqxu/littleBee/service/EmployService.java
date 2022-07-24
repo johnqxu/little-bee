@@ -51,12 +51,11 @@ public class EmployService extends ProgressableService {
 
     public void validate() throws IllegalDataException {
         List<String> employNames = employRepository.findDistinctEmployName();
-        CompletableFuture.allOf(employNames.stream().map(e -> CompletableFuture.supplyAsync(
-                () -> {
-                    validateEmployData(e);
-                    return null;
-                }
-        )).toArray(CompletableFuture[]::new)).join();
+        CompletableFuture.allOf(
+                employNames.stream().map(
+                        e -> CompletableFuture.supplyAsync(() -> validateEmployData(e))
+                ).toArray(CompletableFuture[]::new)
+        ).join();
     }
 
     @Async
