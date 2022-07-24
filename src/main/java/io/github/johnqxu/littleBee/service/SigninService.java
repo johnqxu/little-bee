@@ -64,8 +64,11 @@ public class SigninService extends ProgressableService {
 
     public void assign() {
         List<EmployEntity> employEntities = employRepository.findAll();
+        log.info("totle employs:{}",employEntities.size());
         for (EmployEntity employEntity : employEntities) {
+            log.info("employ:{}",employEntity.getEmployName());
             Set<ProjectEntity> employProjects = fetchEmployProjects(employEntity);
+            log.info("projects:{}",employProjects);
             employEntity.setProjects(employProjects);
             employRepository.save(employEntity);
         }
@@ -102,7 +105,7 @@ public class SigninService extends ProgressableService {
             SigninDto signinDto = signinMapper.toDtoFromXls(e);
             this.create(signinDto);
             return signinDto;
-        })).toArray(CompletableFuture[]::new));
+        })).toArray(CompletableFuture[]::new)).join();
     }
 
 }

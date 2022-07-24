@@ -9,6 +9,7 @@ import io.github.johnqxu.littleBee.repository.EmployRepository;
 import io.github.johnqxu.littleBee.util.XlsUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -29,7 +30,8 @@ public class EmployService extends ProgressableService {
         this.employMapper = employMapper;
     }
 
-    public void create(EmployDto employDto) {
+    @Async
+    public CompletableFuture<EmployEntity> create(EmployDto employDto) {
         EmployEntity employEntity = new EmployEntity();
         employEntity.setEmployName(employDto.getEmployName().trim());
         employEntity.setCompanyName(employDto.getCompanyName().trim());
@@ -40,6 +42,7 @@ public class EmployService extends ProgressableService {
         employEntity.setIdNo(employDto.getIdNo());
         employEntity.setMobile(employDto.getMobile());
         employRepository.save(employEntity);
+        return CompletableFuture.completedFuture(employEntity);
     }
 
     public void deleteAll() {
@@ -48,15 +51,17 @@ public class EmployService extends ProgressableService {
 
     public void validate() throws IllegalDataException {
         List<String> employNames = employRepository.findDistinctEmployName();
+        log.info("validate employs:{}", employNames.size());
         CompletableFuture.allOf(employNames.stream().map(e -> CompletableFuture.supplyAsync(
                 () -> {
                     validateEmployData(e);
                     return null;
                 }
-        )).toArray(CompletableFuture[]::new));
+        )).toArray(CompletableFuture[]::new)).join();
     }
 
-    private void validateEmployData(String employName) {
+    @Async
+    CompletableFuture<Boolean> validateEmployData(String employName) {
         List<EmployEntity> employEntities = employRepository.findEmployEntitiesByEmployNameOrderByStartDateAsc(employName);
         Date lastEndDate = null;
         for (int j = 0; j < employEntities.size(); j++) {
@@ -68,6 +73,7 @@ public class EmployService extends ProgressableService {
             }
             lastEndDate = employEntities.get(j).getEndDate();
         }
+        return CompletableFuture.completedFuture(true);
     }
 
     public void importEmpolys(@NonNull File employExcel) {
@@ -76,7 +82,7 @@ public class EmployService extends ProgressableService {
             EmployDto employDto = employMapper.toDtoFromXls(e);
             this.create(employDto);
             return employDto;
-        })).toArray(CompletableFuture[]::new));
+        })).toArray(CompletableFuture[]::new)).join();
     }
 
 }

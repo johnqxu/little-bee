@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
@@ -49,8 +50,13 @@ public class MainController implements Initializable, ApplicationListener<Applic
     TextArea progressLog;
     private Alert alert;
 
+    @Setter
     private File projectExcel;
+
+    @Setter
     private File employExcel;
+
+    @Setter
     private File signinExcel;
 
     public MainController(PerformService performService) {

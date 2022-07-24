@@ -57,6 +57,6 @@ public class ProjectService extends ProgressableService {
             ProjectDto projectDto = projectMapper.toDtoFromXls(e);
             this.create(projectDto);
             return projectDto;
-        })).toArray(CompletableFuture[]::new));
+        })).toArray(CompletableFuture[]::new)).join();
     }
 }

@@ -53,5 +53,9 @@ public class DataProcessListener implements ApplicationListener<StartProcessEven
         projectService.validate();
         signinService.validate();
         log.info("完成数据校验");
+
+        //处理
+        signinService.assign();
+        log.info("完成数据处理");
     }
 }
