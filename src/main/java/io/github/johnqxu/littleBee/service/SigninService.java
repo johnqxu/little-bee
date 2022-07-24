@@ -60,13 +60,21 @@ public class SigninService extends ProgressableService {
         CompletableFuture.allOf(signinDataEntities.stream().map(e -> CompletableFuture.supplyAsync(() -> this.validate(e))).toArray(CompletableFuture[]::new)).join();
     }
 
+    @Async
+    CompletableFuture<Boolean> assgin(EmployEntity employEntity) {
+        Set<ProjectEntity> employProjects = fetchEmployProjects(employEntity);
+        employEntity.setProjects(employProjects);
+        employRepository.save(employEntity);
+        return CompletableFuture.completedFuture(true);
+    }
+
     public void assign() {
         List<EmployEntity> employEntities = employRepository.findAll();
-        for (EmployEntity employEntity : employEntities) {
-            Set<ProjectEntity> employProjects = fetchEmployProjects(employEntity);
-            employEntity.setProjects(employProjects);
-            employRepository.save(employEntity);
-        }
+        CompletableFuture.allOf(
+                employEntities.stream().map(e -> CompletableFuture.supplyAsync(
+                        () -> this.assgin(e)
+                )).toArray(CompletableFuture[]::new)
+        ).join();
     }
 
     private Set<ProjectEntity> fetchEmployProjects(EmployEntity employ) {
