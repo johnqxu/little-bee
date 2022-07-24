@@ -32,26 +32,22 @@ public class ProjectService extends ProgressableService {
 
     @Async
     public CompletableFuture<ProjectEntity> create(ProjectDto projectDto) {
-        ProjectEntity projectEntity = ProjectEntity.builder()
-                .projectName(projectDto.getProjectName())
-                .startDate(projectDto.getStartDate())
-                .endDate(projectDto.getEndDate())
-                .schoolHour(projectDto.getSchoolHour())
-                .priority(projectDto.getPriority())
-                .build();
+        ProjectEntity projectEntity = ProjectEntity.builder().projectName(projectDto.getProjectName()).startDate(projectDto.getStartDate()).endDate(projectDto.getEndDate()).schoolHour(projectDto.getSchoolHour()).priority(projectDto.getPriority()).build();
         projectRepository.save(projectEntity);
         return CompletableFuture.completedFuture(projectEntity);
     }
 
+    @Async
+    public CompletableFuture<Boolean> validate(ProjectEntity project) {
+        if (project.getStartDate() == null || project.getEndDate() == null || project.getStartDate().after(project.getEndDate())) {
+            throw new IllegalDataException("项目时间错误:" + project.getProjectName());
+        }
+        return CompletableFuture.completedFuture(true);
+    }
+
     public void validate() throws IllegalDataException {
         List<ProjectEntity> projects = projectRepository.findAll();
-        for (ProjectEntity project : projects) {
-            if (project.getStartDate() == null
-                    || project.getEndDate() == null
-                    || project.getStartDate().after(project.getEndDate())) {
-                throw new IllegalDataException("项目时间错误:" + project.getProjectName());
-            }
-        }
+        CompletableFuture.allOf(projects.stream().map(e -> CompletableFuture.supplyAsync(() -> this.validate(e))).toArray(CompletableFuture[]::new)).join();
     }
 
     public void importProjects(File projectExcel) {
