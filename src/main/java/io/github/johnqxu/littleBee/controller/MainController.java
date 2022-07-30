@@ -30,6 +30,8 @@ import java.util.ResourceBundle;
 public class MainController implements Initializable, ApplicationListener<ApplicationEvent> {
 
     private final PerformService performService;
+
+    private File uploadPath;
     @Resource
     ApplicationContext applicationContext;
     @FXML
@@ -69,19 +71,27 @@ public class MainController implements Initializable, ApplicationListener<Applic
 
     public void selectProjectExcel() {
         projectExcel = selectExcel();
+        setUploadPath(projectExcel);
     }
 
     public void selectEmployExcel() {
         employExcel = selectExcel();
+        setUploadPath(employExcel);
     }
 
     public void selectProjectEmployExcel() {
         signinExcel = selectExcel();
+        setUploadPath(signinExcel);
+    }
+
+    private void setUploadPath(File file) {
+        this.uploadPath = file != null ? file.getParentFile() : null;
     }
 
     private File selectExcel() {
         Stage primaryStage = (Stage) mainBox.getScene().getWindow();
         FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(this.uploadPath);
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Excel文件 (*.xls|*.xlsx)", "*.txt", "*.xlsx");
         fileChooser.getExtensionFilters().add(extFilter);
         return fileChooser.showOpenDialog(primaryStage);
