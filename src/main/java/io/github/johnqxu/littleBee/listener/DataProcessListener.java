@@ -36,7 +36,7 @@ public class DataProcessListener implements ApplicationListener<StartProcessEven
         process();
     }
 
-    @Async
+    @Async("bee-executors")
     public void process() {
         //初始化数据库
         employService.deleteAll();
