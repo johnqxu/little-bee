@@ -7,15 +7,20 @@ import io.github.johnqxu.littleBee.model.entity.ProjectEntity;
 import io.github.johnqxu.littleBee.model.mapper.ProjectMapper;
 import io.github.johnqxu.littleBee.repository.ProjectRepository;
 import io.github.johnqxu.littleBee.util.XlsUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Service
 public class ProjectService extends ProgressableService {
+
+    @Autowired
+    private Executor executor;
 
     private final ProjectRepository projectRepository;
 
@@ -49,7 +54,7 @@ public class ProjectService extends ProgressableService {
         List<ProjectEntity> projects = projectRepository.findAll();
         CompletableFuture.allOf(
                 projects.stream().map(
-                        e -> CompletableFuture.supplyAsync(() -> this.validate(e))
+                        e -> CompletableFuture.supplyAsync(() -> this.validate(e), executor)
                 ).toArray(CompletableFuture[]::new)
         ).join();
     }
@@ -60,6 +65,6 @@ public class ProjectService extends ProgressableService {
             ProjectDto projectDto = projectMapper.toDtoFromXls(e);
             this.create(projectDto);
             return projectDto;
-        })).toArray(CompletableFuture[]::new)).join();
+        }, executor)).toArray(CompletableFuture[]::new)).join();
     }
 }

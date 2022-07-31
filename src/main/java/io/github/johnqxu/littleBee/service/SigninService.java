@@ -12,16 +12,21 @@ import io.github.johnqxu.littleBee.repository.ProjectRepository;
 import io.github.johnqxu.littleBee.repository.SigninDataRepository;
 import io.github.johnqxu.littleBee.util.XlsUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Service
 @Slf4j
 public class SigninService extends ProgressableService {
+
+    @Autowired
+    private Executor executor;
 
     private final SigninDataRepository signinRepository;
     private final ProjectRepository projectRepository;
@@ -57,7 +62,7 @@ public class SigninService extends ProgressableService {
 
     public void validate() throws IllegalDataException {
         List<SigninDataEntity> signinDataEntities = signinRepository.findAll();
-        CompletableFuture.allOf(signinDataEntities.stream().map(e -> CompletableFuture.supplyAsync(() -> this.validate(e))).toArray(CompletableFuture[]::new)).join();
+        CompletableFuture.allOf(signinDataEntities.stream().map(e -> CompletableFuture.supplyAsync(() -> this.validate(e), executor)).toArray(CompletableFuture[]::new)).join();
     }
 
     @Async
@@ -72,7 +77,7 @@ public class SigninService extends ProgressableService {
         List<EmployEntity> employEntities = employRepository.findAll();
         CompletableFuture.allOf(
                 employEntities.stream().map(e -> CompletableFuture.supplyAsync(
-                        () -> this.assgin(e)
+                        () -> this.assgin(e), executor
                 )).toArray(CompletableFuture[]::new)
         ).join();
     }
@@ -108,7 +113,7 @@ public class SigninService extends ProgressableService {
             SigninDto signinDto = signinMapper.toDtoFromXls(e);
             this.create(signinDto);
             return signinDto;
-        })).toArray(CompletableFuture[]::new)).join();
+        }, executor)).toArray(CompletableFuture[]::new)).join();
     }
 
 }

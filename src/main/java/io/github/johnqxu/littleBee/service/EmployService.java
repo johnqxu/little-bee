@@ -9,6 +9,7 @@ import io.github.johnqxu.littleBee.repository.EmployRepository;
 import io.github.johnqxu.littleBee.util.XlsUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,14 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Slf4j
 @Service
 public class EmployService extends ProgressableService {
+
+    @Autowired
+    private Executor executor;
 
     private final EmployRepository employRepository;
 
@@ -53,7 +58,7 @@ public class EmployService extends ProgressableService {
         List<String> employNames = employRepository.findDistinctEmployName();
         CompletableFuture.allOf(
                 employNames.stream().map(
-                        e -> CompletableFuture.supplyAsync(() -> validateEmployData(e))
+                        e -> CompletableFuture.supplyAsync(() -> validateEmployData(e), executor)
                 ).toArray(CompletableFuture[]::new)
         ).join();
     }
@@ -80,7 +85,7 @@ public class EmployService extends ProgressableService {
             EmployDto employDto = employMapper.toDtoFromXls(e);
             this.create(employDto);
             return employDto;
-        })).toArray(CompletableFuture[]::new)).join();
+        }, executor)).toArray(CompletableFuture[]::new)).join();
     }
 
 }

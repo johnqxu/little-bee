@@ -6,6 +6,7 @@ import io.github.johnqxu.littleBee.service.ProjectService;
 import io.github.johnqxu.littleBee.service.SigninService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -35,7 +36,8 @@ public class DataProcessListener implements ApplicationListener<StartProcessEven
         process();
     }
 
-    private void process() {
+    @Async
+    public void process() {
         //初始化数据库
         employService.deleteAll();
         projectService.deleteAll();
