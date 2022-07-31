@@ -12,7 +12,6 @@ import io.github.johnqxu.littleBee.repository.ProjectRepository;
 import io.github.johnqxu.littleBee.repository.SigninDataRepository;
 import io.github.johnqxu.littleBee.util.XlsUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -25,19 +24,19 @@ import java.util.concurrent.Executor;
 @Slf4j
 public class SigninService extends ProgressableService {
 
-    @Autowired
-    private Executor executor;
+    private final Executor executor;
 
     private final SigninDataRepository signinRepository;
     private final ProjectRepository projectRepository;
     private final EmployRepository employRepository;
     private final SigninMapper signinMapper;
 
-    public SigninService(SigninDataRepository projectRepository, ProjectRepository projectRepository1, EmployRepository employRepository, SigninMapper signinMapper) {
+    public SigninService(SigninDataRepository projectRepository, ProjectRepository projectRepository1, EmployRepository employRepository, SigninMapper signinMapper, Executor executor) {
         this.signinRepository = projectRepository;
         this.projectRepository = projectRepository1;
         this.employRepository = employRepository;
         this.signinMapper = signinMapper;
+        this.executor = executor;
     }
 
     public void deleteAll() {

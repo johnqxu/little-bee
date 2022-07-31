@@ -15,7 +15,7 @@ public class ThreadPoolTaskExecutorConfiguration {
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         taskExecutor.setCorePoolSize(8);
-        taskExecutor.setMaxPoolSize(512);
+        taskExecutor.setMaxPoolSize(16);
         taskExecutor.setQueueCapacity(10000);
         taskExecutor.setThreadNamePrefix("bee-");
         taskExecutor.initialize();

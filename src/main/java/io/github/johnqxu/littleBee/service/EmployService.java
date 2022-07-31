@@ -9,7 +9,6 @@ import io.github.johnqxu.littleBee.repository.EmployRepository;
 import io.github.johnqxu.littleBee.util.XlsUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +22,16 @@ import java.util.concurrent.Executor;
 @Service
 public class EmployService extends ProgressableService {
 
-    @Autowired
-    private Executor executor;
+    private final Executor executor;
 
     private final EmployRepository employRepository;
 
     private final EmployMapper employMapper;
 
-    public EmployService(EmployRepository employRepository, EmployMapper employMapper) {
+    public EmployService(EmployRepository employRepository, EmployMapper employMapper, Executor executor) {
         this.employRepository = employRepository;
         this.employMapper = employMapper;
+        this.executor = executor;
     }
 
     @Async

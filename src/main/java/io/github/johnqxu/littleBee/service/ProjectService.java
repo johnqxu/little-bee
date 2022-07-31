@@ -7,7 +7,6 @@ import io.github.johnqxu.littleBee.model.entity.ProjectEntity;
 import io.github.johnqxu.littleBee.model.mapper.ProjectMapper;
 import io.github.johnqxu.littleBee.repository.ProjectRepository;
 import io.github.johnqxu.littleBee.util.XlsUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +18,16 @@ import java.util.concurrent.Executor;
 @Service
 public class ProjectService extends ProgressableService {
 
-    @Autowired
-    private Executor executor;
+    private final Executor executor;
 
     private final ProjectRepository projectRepository;
 
     private final ProjectMapper projectMapper;
 
-    public ProjectService(ProjectRepository projectRepository, ProjectMapper projectMapper) {
+    public ProjectService(ProjectRepository projectRepository, ProjectMapper projectMapper, Executor executor) {
         this.projectRepository = projectRepository;
         this.projectMapper = projectMapper;
+        this.executor = executor;
     }
 
     public void deleteAll() {
