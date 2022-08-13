@@ -3,13 +3,15 @@ package io.github.johnqxu.littleBee.model;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.annotation.write.style.ContentFontStyle;
 import com.alibaba.excel.annotation.write.style.HeadFontStyle;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-@HeadFontStyle(fontHeightInPoints = 10,fontName = "Arial")
+@HeadFontStyle(fontHeightInPoints = 11,fontName = "宋体")
+@ContentFontStyle(fontHeightInPoints = 11,fontName = "宋体")
 public class SupplementaryXlsData {
 
     @ExcelProperty("姓名")

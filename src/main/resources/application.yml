@@ -5,13 +5,17 @@ spring:
     ui:
       title: 勤劳的小蜜蜂
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/bee?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
-    username: root
-    password: 12345678
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://127.0.0.1:3306/bee?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    username: root
+#    password: 12345678
+    driver-class-name: org.hsqldb.jdbcDriver
+    url: jdbc:hsqldb:mem://localhost/testdb;shutdown=true
+    username: sa
+    password:
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     generate-ddl: true
     show-sql: false
     open-in-view: true
