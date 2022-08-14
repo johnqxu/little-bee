@@ -43,14 +43,14 @@ public class SigninService extends ProgressableService {
         signinRepository.deleteAll();
     }
 
-    @Async
+    @Async("bee-executors")
     public CompletableFuture<SigninDataEntity> create(SigninDto signinDto) {
         SigninDataEntity signinDataEntity = SigninDataEntity.builder().projectName(signinDto.getProjectName()).employName(signinDto.getEmployName()).adjustFlag("default").build();
         signinRepository.save(signinDataEntity);
         return CompletableFuture.completedFuture(signinDataEntity);
     }
 
-    @Async
+    @Async("bee-executors")
     CompletableFuture<Boolean> validate(SigninDataEntity siginData) {
         ProjectEntity projectEntity = projectRepository.findProjectEntityByProjectName(siginData.getProjectName());
         if (projectEntity == null) {
@@ -64,7 +64,7 @@ public class SigninService extends ProgressableService {
         CompletableFuture.allOf(signinDataEntities.stream().map(e -> CompletableFuture.supplyAsync(() -> this.validate(e), executor)).toArray(CompletableFuture[]::new)).join();
     }
 
-    @Async
+    @Async("bee-executors")
     CompletableFuture<Boolean> assgin(EmployEntity employEntity) {
         Set<ProjectEntity> employProjects = fetchEmployProjects(employEntity);
         employEntity.setProjects(employProjects);
@@ -72,6 +72,7 @@ public class SigninService extends ProgressableService {
         return CompletableFuture.completedFuture(true);
     }
 
+    @Async("bee-executors")
     public void assign() {
         List<EmployEntity> employEntities = employRepository.findAll();
         CompletableFuture.allOf(
