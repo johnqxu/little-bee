@@ -48,14 +48,14 @@ public class ProjectEntity implements Serializable, Comparable<ProjectEntity> {
 
     @Override
     public int compareTo(ProjectEntity o) {
-        int gapSchoolHour = this.schoolHour - o.getSchoolHour();
-        if (gapSchoolHour != 0) {
-            return gapSchoolHour;
+        int gapPriority = this.priority - o.getPriority();
+        if (gapPriority != 0) {
+            return gapPriority;
         } else {
-            int gapPriority = this.priority - o.getPriority();
-            if(gapPriority != 0){
-                return gapPriority;
-            }else{
+            int gapSchoolHour = this.schoolHour - o.getSchoolHour();
+            if (gapSchoolHour != 0) {
+                return gapSchoolHour;
+            } else {
                 return this.getProjectName().compareTo(o.projectName);
             }
         }
