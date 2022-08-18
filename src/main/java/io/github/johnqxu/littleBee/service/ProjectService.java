@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Service
-public class ProjectService extends ProgressableService {
+public class ProjectService {
 
     private final Executor executor;
 

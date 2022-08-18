@@ -20,7 +20,7 @@ import java.util.concurrent.Executor;
 
 @Slf4j
 @Service
-public class EmployService extends ProgressableService {
+public class EmployService {
 
     private final Executor executor;
 

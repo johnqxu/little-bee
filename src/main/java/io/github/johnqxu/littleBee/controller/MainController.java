@@ -126,34 +126,9 @@ public class MainController implements Initializable, ApplicationListener<Applic
         exportBtn.setDisable(false);
     }
 
-//    private void show(Alert.AlertType alertType, String message, ButtonType... buttons) {
-//        if (alert == null) {
-//            alert = new Alert(Alert.AlertType.INFORMATION);
-//        }
-//        alert.setAlertType(alertType);
-//        alert.setContentText(message);
-//        alert.getButtonTypes().removeAll(new ArrayList<>(alert.getButtonTypes()));
-//        alert.getButtonTypes().addAll(buttons);
-//        alert.showAndWait();
-//    }
-
     @Override
     public void onApplicationEvent(ApplicationEvent applicationEvent) {
-//        if (applicationEvent instanceof ProgressChangeEvent progressChangeEvent) {
-//            if (progressChangeEvent.getProgress() > 0) {
-//                progressBar.setProgress(progressChangeEvent.getProgress());
-//            }
-//            String log = progressLog.getText();
-//            log = String.join("\n", progressChangeEvent.getProgressText(), log);
-//            progressLog.setText(log);
-//            if (progressChangeEvent.getProgress() == 1) {
-//                startBtn.setDisable(false);
-//            }
-//        } else if (applicationEvent instanceof MessageEvent validationEvent) {
-//            String log = progressLog.getText();
-//            log = String.join("\n", validationEvent.getValidateMessage(), log);
-//            progressLog.setText(log);
-//        }
+
     }
 
 

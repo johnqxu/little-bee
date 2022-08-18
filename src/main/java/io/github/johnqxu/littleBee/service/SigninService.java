@@ -22,7 +22,7 @@ import java.util.concurrent.Executor;
 
 @Service
 @Slf4j
-public class SigninService extends ProgressableService {
+public class SigninService {
 
     private final Executor executor;
 
