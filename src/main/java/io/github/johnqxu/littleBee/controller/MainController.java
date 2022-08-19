@@ -127,9 +127,7 @@ public class MainController implements Initializable, ApplicationListener<Applic
     }
 
     @Override
-    public void onApplicationEvent(ApplicationEvent applicationEvent) {
+    public void onApplicationEvent(ApplicationEvent event) {
 
     }
-
-
 }
