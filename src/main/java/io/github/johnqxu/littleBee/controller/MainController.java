@@ -1,20 +1,20 @@
 package io.github.johnqxu.littleBee.controller;
 
+import io.github.johnqxu.littleBee.event.PromptEvent;
 import io.github.johnqxu.littleBee.event.StartProcessEvent;
 import io.github.johnqxu.littleBee.service.PerformService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 
 @Slf4j
 @Component
-public class MainController implements Initializable, ApplicationListener<ApplicationEvent> {
+public class MainController implements Initializable, ApplicationListener<PromptEvent> {
 
     private final PerformService performService;
 
@@ -49,8 +49,7 @@ public class MainController implements Initializable, ApplicationListener<Applic
     @FXML
     ProgressBar progressBar;
     @FXML
-    TextArea progressLog;
-    private Alert alert;
+    TextFlow progressLog;
 
     @Setter
     private File projectExcel;
@@ -127,7 +126,22 @@ public class MainController implements Initializable, ApplicationListener<Applic
     }
 
     @Override
-    public void onApplicationEvent(ApplicationEvent event) {
-
+    public void onApplicationEvent(PromptEvent event) {
+        Text text = new Text();
+        switch (event.getPromptType()) {
+            case INFO:
+                text.setStyle("-fx-fill: #1b143b");
+                break;
+            case WARNING:
+                text.setStyle("-fx-fill: #44B03B");
+                break;
+            case ERROR:
+                text.setStyle("-fx-fill: red");
+                break;
+            default:
+                text.setStyle("-fx-fill: green");
+        }
+        text.setText(String.format("%s%n", event.getPrompt()));
+        progressLog.getChildren().add(text);
     }
 }
