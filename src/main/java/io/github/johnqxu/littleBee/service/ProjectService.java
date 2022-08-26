@@ -36,7 +36,7 @@ public class ProjectService {
 
     @Async
     public CompletableFuture<ProjectEntity> create(ProjectDto projectDto) {
-        ProjectEntity projectEntity = ProjectEntity.builder().projectName(projectDto.getProjectName()).startDate(projectDto.getStartDate()).endDate(projectDto.getEndDate()).schoolHour(projectDto.getSchoolHour()).priority(projectDto.getPriority()).build();
+        ProjectEntity projectEntity = ProjectEntity.builder().id(projectDto.getProjectId()).projectName(projectDto.getProjectName()).startDate(projectDto.getStartDate()).endDate(projectDto.getEndDate()).schoolHour(projectDto.getSchoolHour()).priority(projectDto.getPriority()).build();
         projectRepository.save(projectEntity);
         return CompletableFuture.completedFuture(projectEntity);
     }

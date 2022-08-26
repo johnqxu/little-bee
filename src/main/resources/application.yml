@@ -11,6 +11,7 @@ spring:
 #    password: 12345678
     driver-class-name: org.hsqldb.jdbcDriver
     url: jdbc:hsqldb:mem://localhost/testdb;shutdown=true
+#    url: jdbc:hsqldb:file:db/file;shutdown=true
     username: sa
     password:
   jpa:

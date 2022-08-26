@@ -67,6 +67,7 @@ public class PerformService {
                     data.setMobile(employEntity.getMobile());
                     data.setExamResult("合格");
                     data.setIdType("身份证");
+                    data.setProjectId(project.getId());
                     data.setName(employEntity.getEmployName());
                     data.setIsLocal("是");
                     data.setTrainerStartDate(employEntity.getStartDate());
@@ -95,7 +96,7 @@ public class PerformService {
                 }
                 List<ProjectEntity> projects = projectRepository.findProjectEntitiesByStartDateAfterAndEndDateBefore(startDate, endDate);
                 for (ProjectEntity project : projects) {
-                    if(!employ.getProjects().contains(project)) {
+                    if (!employ.getProjects().contains(project)) {
                         SupplementaryXlsData data = new SupplementaryXlsData();
                         data.setEmployEndDate(employ.getEndDate());
                         data.setEmployStartDate(employ.getStartDate());
@@ -107,6 +108,7 @@ public class PerformService {
                         data.setProjectStartDate(project.getStartDate());
                         data.setCompanyName(employ.getCompanyName());
                         data.setSchoolHours(project.getSchoolHour());
+                        data.setProjectId(project.getId());
                         dataList.add(data);
                     }
                 }

@@ -44,6 +44,9 @@ public class TrainingListXlsData {
     @ExcelProperty("是否本市户籍")
     private String isLocal;
 
+    @ExcelProperty("课程编号")
+    private int projectId;
+
     @ColumnWidth(20)
     @ExcelProperty("课程名称")
     private String projectName;

@@ -23,7 +23,7 @@ public class ProjectEntity implements Serializable, Comparable<ProjectEntity> {
     private static final long serialVersionUID = 6690363990834406951L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     @EqualsAndHashCode.Include
     private Integer id;

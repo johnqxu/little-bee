@@ -33,6 +33,9 @@ public class SupplementaryXlsData {
     @ExcelProperty("参训次数")
     private int trainingTimes;
 
+    @ExcelProperty("课程编号")
+    private int projectId;
+
     @ExcelProperty("课程名称")
     private String project;
 
