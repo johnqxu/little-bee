@@ -2,6 +2,7 @@ package io.github.johnqxu.littleBee.controller;
 
 import io.github.johnqxu.littleBee.event.PromptEvent;
 import io.github.johnqxu.littleBee.event.StartProcessEvent;
+import io.github.johnqxu.littleBee.listener.PromptType;
 import io.github.johnqxu.littleBee.service.PerformService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -97,26 +98,24 @@ public class MainController implements Initializable, ApplicationListener<Prompt
     }
 
     public void performAction() {
-        checkXlsFile(projectExcel, "课程");
-        checkXlsFile(employExcel, "员工");
-        checkXlsFile(signinExcel, "签到");
-        applicationContext.publishEvent(new StartProcessEvent(this, employExcel, projectExcel, signinExcel));
+        try {
+            checkXlsFile(employExcel, "人员花名册");
+            checkXlsFile(signinExcel, "培训");
+            checkXlsFile(projectExcel, "项目");
+            applicationContext.publishEvent(new StartProcessEvent(this, employExcel, projectExcel, signinExcel));
+        } catch (Exception ex) {
+            applicationContext.publishEvent(new PromptEvent(this, ex.getMessage(), PromptType.ERROR));
+        }
     }
 
     private void checkXlsFile(File file, String fileDesc) {
-        Optional.ofNullable(file).ifPresentOrElse(
-                x -> {
-                    if (!(file.exists()
-                            && file.isFile()
-                            && file.canRead()
-                            && (file.getName().toLowerCase().endsWith("xls") || file.getName().toLowerCase().endsWith("xlsx")))) {
-                        throw new IllegalArgumentException("错误的" + fileDesc + "文件");
-                    }
-                },
-                () -> {
-                    throw new IllegalArgumentException(fileDesc + "文件为空");
-                }
-        );
+        Optional.ofNullable(file).ifPresentOrElse(x -> {
+            if (file == null || !(file.exists() && file.isFile() && file.canRead() && (file.getName().toLowerCase().endsWith("xls") || file.getName().toLowerCase().endsWith("xlsx")))) {
+                throw new IllegalArgumentException("错误的" + fileDesc + "文件");
+            }
+        }, () -> {
+            throw new IllegalArgumentException(fileDesc + "文件为空");
+        });
     }
 
     public void export() throws ParseException {
@@ -129,17 +128,10 @@ public class MainController implements Initializable, ApplicationListener<Prompt
     public void onApplicationEvent(PromptEvent event) {
         Text text = new Text();
         switch (event.getPromptType()) {
-            case INFO:
-                text.setStyle("-fx-fill: #1b143b");
-                break;
-            case WARNING:
-                text.setStyle("-fx-fill: #44B03B");
-                break;
-            case ERROR:
-                text.setStyle("-fx-fill: red");
-                break;
-            default:
-                text.setStyle("-fx-fill: green");
+            case INFO -> text.setStyle("-fx-fill: #1b143b");
+            case WARNING -> text.setStyle("-fx-fill: #44B03B");
+            case ERROR -> text.setStyle("-fx-fill: red");
+            default -> text.setStyle("-fx-fill: green");
         }
         text.setText(String.format("%s%n", event.getPrompt()));
         progressLog.getChildren().add(text);
