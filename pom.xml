@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.2</version>
+        <version>2.7.5</version>
         <relativePath/>
     </parent>
 
@@ -24,12 +24,14 @@
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <javafx-maven-plugin.version>0.0.5</javafx-maven-plugin.version>
         <commons-io.version>2.11.0</commons-io.version>
-        <hibernate-types.version>2.19.2</hibernate-types.version>
+        <hibernate-types.version>2.20.0</hibernate-types.version>
         <hikari-cp.version>5.0.1</hikari-cp.version>
         <hsqldb.version>2.6.1</hsqldb.version>
         <lombok.version>1.18.24</lombok.version>
-        <mapstruct.version>1.5.2.Final</mapstruct.version>
+        <mapstruct.version>1.5.3.Final</mapstruct.version>
         <spring-native.version>0.12.1</spring-native.version>
+        <easyexcel.version>3.1.2</easyexcel.version>
+        <hsql.version>2.7.1</hsql.version>
         <repackage.classifier/>
     </properties>
 
@@ -38,7 +40,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>2.7.3</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.experimental</groupId>
@@ -48,7 +50,7 @@
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>2.7.0</version>
+            <version>${hsql.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -106,13 +108,13 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>3.1.1</version>
+            <version>${easyexcel.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.7.3</version>
+            <version>${parent.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
