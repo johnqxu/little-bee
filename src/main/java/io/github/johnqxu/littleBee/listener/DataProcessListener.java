@@ -1,6 +1,8 @@
 package io.github.johnqxu.littleBee.listener;
 
+import io.github.johnqxu.littleBee.event.FinishAssignEvent;
 import io.github.johnqxu.littleBee.event.PromptEvent;
+import io.github.johnqxu.littleBee.event.StartAssignEvent;
 import io.github.johnqxu.littleBee.event.StartProcessEvent;
 import io.github.johnqxu.littleBee.service.EmployService;
 import io.github.johnqxu.littleBee.service.ProjectService;
@@ -43,6 +45,8 @@ public class DataProcessListener implements ApplicationListener<StartProcessEven
 
     @Async("bee-executors")
     public void process() {
+        ac.publishEvent(new StartAssignEvent(this));
+
         //初始化数据库
         employService.deleteAll();
         projectService.deleteAll();
@@ -68,6 +72,6 @@ public class DataProcessListener implements ApplicationListener<StartProcessEven
         signinService.assign();
         log.info("完成数据处理");
         ac.publishEvent(new PromptEvent(this, "完成数据处理", PromptType.INFO));
-
+        ac.publishEvent(new FinishAssignEvent(this));
     }
 }

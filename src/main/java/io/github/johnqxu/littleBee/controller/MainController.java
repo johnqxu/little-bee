@@ -1,12 +1,13 @@
 package io.github.johnqxu.littleBee.controller;
 
-import io.github.johnqxu.littleBee.event.PromptEvent;
-import io.github.johnqxu.littleBee.event.StartProcessEvent;
+import io.github.johnqxu.littleBee.event.*;
 import io.github.johnqxu.littleBee.listener.PromptType;
 import io.github.johnqxu.littleBee.service.PerformService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -28,7 +29,7 @@ import java.util.ResourceBundle;
 
 @Slf4j
 @Component
-public class MainController implements Initializable, ApplicationListener<PromptEvent> {
+public class MainController implements Initializable, ApplicationListener<ProgressEvent> {
 
     private final PerformService performService;
 
@@ -119,21 +120,44 @@ public class MainController implements Initializable, ApplicationListener<Prompt
     }
 
     public void export() throws ParseException {
+        applicationContext.publishEvent(new StartExportEvent(this));
         exportBtn.setDisable(true);
         performService.export();
         exportBtn.setDisable(false);
+        applicationContext.publishEvent(new FinishExportEvent(this));
     }
 
     @Override
-    public void onApplicationEvent(PromptEvent event) {
-        Text text = new Text();
-        switch (event.getPromptType()) {
-            case INFO -> text.setStyle("-fx-fill: #1b143b");
-            case WARNING -> text.setStyle("-fx-fill: #44B03B");
-            case ERROR -> text.setStyle("-fx-fill: red");
-            default -> text.setStyle("-fx-fill: green");
+    public void onApplicationEvent(ProgressEvent event) {
+//        Text text = new Text();
+//        switch (event.getPromptType()) {
+//            case INFO -> text.setStyle("-fx-fill: #1b143b");
+//            case WARNING -> text.setStyle("-fx-fill: #44B03B");
+//            case ERROR -> text.setStyle("-fx-fill: red");
+//            default -> text.setStyle("-fx-fill: green");
+//        }
+//        text.setText(String.format("%s%n", event.getPrompt()));
+//        progressLog.getChildren().add(text);
+        Alert alert;
+        switch (event.getProgress()){
+            case START_ASSIGN:
+            case START_EXPORT:
+                startBtn.setDisable(true);
+                exportBtn.setDisable(true);
+                break;
+            case FINISH_ASSIGN:
+                alert = new Alert(Alert.AlertType.INFORMATION, "完成计算", ButtonType.CLOSE);
+                alert.show();
+                startBtn.setDisable(false);
+                exportBtn.setDisable(false);
+                break;
+            case FINISH_EXPORT:
+                alert = new Alert(Alert.AlertType.INFORMATION, "完成导出", ButtonType.CLOSE);
+                alert.show();
+                startBtn.setDisable(false);
+                exportBtn.setDisable(false);
+                break;
         }
-        text.setText(String.format("%s%n", event.getPrompt()));
-        progressLog.getChildren().add(text);
+
     }
 }
