@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -91,19 +92,11 @@ public class SigninService {
                 ps.add(signinProject);
             }
         }
-        Set<ProjectEntity> sortedProjects = new TreeSet<>(Comparator.reverseOrder());
-        sortedProjects.addAll(ps);
-        Iterator<ProjectEntity> ip = sortedProjects.iterator();
-        int i = 0;
-        while (ip.hasNext()) {
-            i++;
-            ProjectEntity p = ip.next();
-            log.info("项目:{},课时:{}", p.getProjectName(), p.getSchoolHour());
-            if (i > 3) {
-                ip.remove();
-                log.info("删除项目:{},当前容量:{}", p.getProjectName(), sortedProjects.size());
-            }
-        }
+
+        Set<ProjectEntity> sortedProjects = ps.stream()
+                .sorted(Comparator.comparing(ProjectEntity::getPriority))
+                .limit(3)
+                .collect(Collectors.toSet());
         return sortedProjects;
     }
 
