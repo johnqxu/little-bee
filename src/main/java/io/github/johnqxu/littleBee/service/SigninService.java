@@ -73,7 +73,6 @@ public class SigninService {
         return CompletableFuture.completedFuture(true);
     }
 
-    @Async("bee-executors")
     public void assign() {
         List<EmployEntity> employEntities = employRepository.findAll();
         CompletableFuture.allOf(
