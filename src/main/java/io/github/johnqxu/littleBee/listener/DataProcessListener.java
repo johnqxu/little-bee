@@ -56,8 +56,11 @@ public class DataProcessListener implements ApplicationListener<StartProcessEven
 
         //导入
         employService.importEmpolys(employExcel);
+        log.info("导入花名册成功");
         projectService.importProjects(projectExcel);
+        log.info("导入课程成功");
         signinService.importSigninData(signinExcel);
+        log.info("导入签到表成功");
         log.info("完成数据导入");
         ac.publishEvent(new PromptEvent(this, "完成数据导入", PromptType.INFO));
 

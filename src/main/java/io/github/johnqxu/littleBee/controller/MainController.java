@@ -100,12 +100,17 @@ public class MainController implements Initializable, ApplicationListener<Progre
 
     public void performAction() {
         try {
+            log.info("开始校验");
             checkXlsFile(employExcel, "人员花名册");
+            log.info("完成花名册校验");
             checkXlsFile(signinExcel, "培训");
+            log.info("完成签到表校验");
             checkXlsFile(projectExcel, "项目");
+            log.info("完成培训课程校验");
             applicationContext.publishEvent(new StartProcessEvent(this, employExcel, projectExcel, signinExcel));
         } catch (Exception ex) {
             applicationContext.publishEvent(new PromptEvent(this, ex.getMessage(), PromptType.ERROR));
+            log.error(ex.getMessage());
         }
     }
 
