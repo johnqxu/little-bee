@@ -1,8 +1,8 @@
 package io.github.johnqxu.littleBee.model.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 @Builder

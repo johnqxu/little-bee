@@ -2,6 +2,7 @@ package io.github.johnqxu.littleBee.repository;
 
 import io.github.johnqxu.littleBee.model.entity.EmployEntity;
 import io.github.johnqxu.littleBee.model.entity.ProjectEntity;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;

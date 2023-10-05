@@ -1,6 +1,7 @@
 package io.github.johnqxu.littleBee.repository;
 
 import io.github.johnqxu.littleBee.service.SigninService;
+import jakarta.annotation.Resource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 
 @DataJpaTest
 @Rollback(value = false)

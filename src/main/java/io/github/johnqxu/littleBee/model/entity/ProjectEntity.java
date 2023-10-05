@@ -1,9 +1,9 @@
 package io.github.johnqxu.littleBee.model.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;

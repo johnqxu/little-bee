@@ -10,11 +10,11 @@ import io.github.johnqxu.littleBee.model.entity.EmployEntity;
 import io.github.johnqxu.littleBee.model.entity.ProjectEntity;
 import io.github.johnqxu.littleBee.repository.EmployRepository;
 import io.github.johnqxu.littleBee.repository.ProjectRepository;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -3,6 +3,7 @@ package io.github.johnqxu.littleBee.controller;
 import io.github.johnqxu.littleBee.event.*;
 import io.github.johnqxu.littleBee.listener.PromptType;
 import io.github.johnqxu.littleBee.service.PerformService;
+import jakarta.annotation.Resource;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -20,7 +21,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.net.URL;
 import java.text.ParseException;
